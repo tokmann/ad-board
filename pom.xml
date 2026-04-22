@@ -35,7 +35,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
 
         <!-- Documentation -->
-        <swagger.version>2.2.20</swagger.version>
+        <springdoc.version>2.6.0</springdoc.version>
 
         <!-- Logging -->
         <logback.version>1.4.14</logback.version>
@@ -163,9 +163,10 @@
 
         <!-- Documentation -->
         <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations-jakarta</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Logging -->
@@ -258,55 +259,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
-            </plugin>
-
-            <!-- Swagger -->
-            <plugin>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-maven-plugin-jakarta</artifactId>
-                <version>${swagger.version}</version>
-                <configuration>
-                    <outputFileName>openapi</outputFileName>
-                    <outputPath>target/swagger</outputPath>
-                    <outputFormat>JSON</outputFormat>
-                    <resourcePackages>
-                        <package>com.adboard.controller</package>
-                    </resourcePackages>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>resolve</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-openapi</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/adboard-1.0.0/api-docs</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>target/swagger</directory>
-                                    <includes>
-                                        <include>openapi.json</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
