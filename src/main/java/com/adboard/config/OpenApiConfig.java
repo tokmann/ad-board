@@ -5,12 +5,10 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.configuration.SpringDocConfiguration;
 import org.springdoc.webmvc.core.configuration.SpringDocWebMvcConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@ComponentScan(basePackages = "com.adboard.controller")
 @Import({ SpringDocConfiguration.class, SpringDocWebMvcConfiguration.class })
 public class OpenApiConfig {
 
