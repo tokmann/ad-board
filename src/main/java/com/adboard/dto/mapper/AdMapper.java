@@ -1,8 +1,8 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.request.AdCreateRequestDto;
-import com.adboard.dto.request.AdUpdateRequestDto;
-import com.adboard.dto.response.AdResponseDto;
+import com.adboard.dto.request.ad.AdCreateRequestDto;
+import com.adboard.dto.request.ad.AdUpdateRequestDto;
+import com.adboard.dto.response.ad.AdResponseDto;
 import com.adboard.entity.Ad;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

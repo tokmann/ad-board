@@ -1,11 +1,14 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.request.RegisterRequestDto;
+import com.adboard.dto.request.user.ProfileUpdateRequestDto;
+import com.adboard.dto.request.auth.RegisterRequestDto;
 import com.adboard.dto.response.UserPreviewDto;
+import com.adboard.dto.response.user.UserProfileDto;
 import com.adboard.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
@@ -18,4 +21,8 @@ public interface UserMapper {
   User toEntity(RegisterRequestDto dto);
 
   UserPreviewDto toPreviewDto(User user);
+
+  UserProfileDto toProfileDto(User user);
+
+  void updateEntityFromDto(ProfileUpdateRequestDto dto, @MappingTarget User user);
 }

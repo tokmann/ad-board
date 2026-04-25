@@ -23,7 +23,6 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:jdbc.properties")
-@ComponentScan(basePackages = "com.adboard.repository")
 @RequiredArgsConstructor
 public class JpaConfig {
 

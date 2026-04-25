@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class CommentResponseDto {
+
   private Long id;
   private String text;
   private UserPreviewDto author;

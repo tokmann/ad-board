@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReviewResponseDto {
+
   private Long id;
   private Integer rating;
   private String commentText;

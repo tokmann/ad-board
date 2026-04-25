@@ -8,7 +8,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
   protected Class<?>[] getRootConfigClasses() {
     return new Class[] {
         JpaConfig.class,
-        LiquibaseConfig.class
+        LiquibaseConfig.class,
+        AppConfig.class
     };
   }
 

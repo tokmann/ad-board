@@ -1,6 +1,6 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.response.CategoryDto;
+import com.adboard.dto.response.category.CategoryDto;
 import com.adboard.entity.reference.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

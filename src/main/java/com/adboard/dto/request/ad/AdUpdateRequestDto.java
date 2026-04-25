@@ -1,4 +1,4 @@
-package com.adboard.dto.request;
+package com.adboard.dto.request.ad;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

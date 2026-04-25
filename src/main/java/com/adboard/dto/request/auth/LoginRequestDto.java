@@ -1,4 +1,4 @@
-package com.adboard.dto.request;
+package com.adboard.dto.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
