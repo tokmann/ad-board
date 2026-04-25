@@ -39,7 +39,7 @@ public class Ad {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String description;
 
-  @Column(name = "image_url", length = 500)
+  @Column(name = "image_url")
   private String imageUrl;
 
   @Column(nullable = false, precision = 10, scale = 2)
