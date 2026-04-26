@@ -19,16 +19,12 @@ public class Message {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "conversation_id", nullable = false)
+  private Conversation conversation;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "sender_id", nullable = false)
   private User sender;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "receiver_id", nullable = false)
-  private User receiver;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ad_id", nullable = false)
-  private Ad ad;
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;

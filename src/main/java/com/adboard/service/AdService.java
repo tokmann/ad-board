@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Service
 public class AdService {
 
-
   public PageResponse<AdResponseDto> searchAds(int page,
                                                int size,
                                                String keyword,
@@ -38,6 +37,10 @@ public class AdService {
   }
 
   public AdResponseDto promoteAd(Long id, Authentication authentication) {
+    return null;
+  }
+
+  public PageResponse<AdResponseDto> getSalesHistory(int page, int size, Authentication authentication) {
     return null;
   }
 }

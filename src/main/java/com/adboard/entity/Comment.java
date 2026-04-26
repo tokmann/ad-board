@@ -33,7 +33,7 @@ public class Comment {
   private Comment parentComment;
 
   @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
-  private List<Comment> replies = new ArrayList<>();
+  private List<Comment> replies;
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String text;
@@ -44,5 +44,6 @@ public class Comment {
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();
+    replies = new ArrayList<>();
   }
 }

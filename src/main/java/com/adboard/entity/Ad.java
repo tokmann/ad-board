@@ -47,7 +47,7 @@ public class Ad {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private AdStatus status = AdStatus.DRAFT;
+  private AdStatus status;
 
   @Column(name = "is_promoted", nullable = false)
   private boolean isPromoted = false;
@@ -71,6 +71,7 @@ public class Ad {
   protected void onCreate() {
     createdAt = LocalDateTime.now();
     updatedAt = LocalDateTime.now();
+    status = AdStatus.DRAFT;
   }
 
   @PreUpdate

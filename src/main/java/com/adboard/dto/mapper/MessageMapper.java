@@ -1,7 +1,7 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.request.MessageRequestDto;
-import com.adboard.dto.response.MessageResponseDto;
+import com.adboard.dto.request.message.MessageRequestDto;
+import com.adboard.dto.response.message.MessageResponseDto;
 import com.adboard.entity.Message;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

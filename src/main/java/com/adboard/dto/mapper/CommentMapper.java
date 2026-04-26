@@ -1,7 +1,7 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.request.CommentRequestDto;
-import com.adboard.dto.response.CommentResponseDto;
+import com.adboard.dto.request.comment.CommentRequestDto;
+import com.adboard.dto.response.comment.CommentResponseDto;
 import com.adboard.entity.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.adboard.controller", "com.adboard.exception"})
+@ComponentScan(basePackages = "com.adboard.controller")
 public class WebMvcConfig implements WebMvcConfigurer {
 
   @Bean
