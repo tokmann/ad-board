@@ -10,6 +10,6 @@ public class MessageResponseDto {
   private Long id;
   private String content;
   private UserPreviewDto sender;
-  private boolean isRead;
+  private boolean read;
   private LocalDateTime createdAt;
 }

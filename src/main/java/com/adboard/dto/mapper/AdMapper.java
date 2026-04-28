@@ -6,9 +6,15 @@ import com.adboard.dto.response.ad.AdResponseDto;
 import com.adboard.entity.Ad;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, CategoryMapper.class})
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    uses = {UserMapper.class, CategoryMapper.class},
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface AdMapper {
 
   @Mapping(target = "id", ignore = true)

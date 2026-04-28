@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- 1. Users table -->
+    <changeSet id="1" author="rodya">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="city" type="VARCHAR(100)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="version" type="INT" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 2. Directory of users -->
+    <changeSet id="2" author="rodya">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <!-- Possible roles -->
+        <insert tableName="roles">
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <!-- 3. User and Role connection table -->
+    <changeSet id="3" author="rodya">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_roles" columnNames="user_id, role_id"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_user_roles_user"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="role_id"
+                                 referencedTableName="roles" referencedColumnNames="id"
+                                 constraintName="fk_user_roles_role"/>
+    </changeSet>
+
+    <!-- 4. Categories table -->
+    <changeSet id="4" author="rodya">
+        <createTable tableName="categories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <!-- Possible categories -->
+        <insert tableName="categories">
+            <column name="name" value="Электроника"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Одежда"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Автомобили"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Недвижимость"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Дом и сад"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Услуги"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Хобби и отдых"/>
+        </insert>
+    </changeSet>
+
+    <!-- 5. Ads table -->
+    <changeSet id="5" author="rodya">
+        <createTable tableName="ads">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="seller_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="buyer_id" type="BIGINT"/>
+            <column name="title" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="image_url" type="VARCHAR(500)"/>
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)" defaultValue="DRAFT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_promoted" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="promote_expires_at" type="TIMESTAMP"/>
+            <column name="sold_at" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="version" type="INT" defaultValue="0"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="ads" baseColumnNames="seller_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_ads_seller"/>
+        <addForeignKeyConstraint baseTableName="ads" baseColumnNames="category_id"
+                                 referencedTableName="categories" referencedColumnNames="id"
+                                 constraintName="fk_ads_category"/>
+        <addForeignKeyConstraint baseTableName="ads" baseColumnNames="buyer_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_ads_buyer"/>
+        <createIndex tableName="ads" indexName="idx_ads_status_category">
+            <column name="status"/>
+            <column name="category_id"/>
+        </createIndex>
+        <createIndex tableName="ads" indexName="idx_ads_price">
+            <column name="price"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 6. Comments table -->
+    <changeSet id="6" author="rodya">
+        <createTable tableName="comments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_comment_id" type="BIGINT"/>
+            <column name="text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="ad_id"
+                                 referencedTableName="ads" referencedColumnNames="id"
+                                 constraintName="fk_comments_ad"/>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="author_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_comments_author"/>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="parent_comment_id"
+                                 referencedTableName="comments" referencedColumnNames="id"
+                                 constraintName="fk_comments_parent"/>
+    </changeSet>
+
+    <!-- 7. Conversations table -->
+    <changeSet id="7" author="rodya">
+        <createTable tableName="conversations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="buyer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seller_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="conversations" baseColumnNames="ad_id"
+                                 referencedTableName="ads" referencedColumnNames="id"
+                                 constraintName="fk_conv_ad"/>
+        <addForeignKeyConstraint baseTableName="conversations" baseColumnNames="buyer_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_conv_buyer"/>
+        <addForeignKeyConstraint baseTableName="conversations" baseColumnNames="seller_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_conv_seller"/>
+        <createIndex tableName="conversations" indexName="idx_conv_ad_users">
+            <column name="ad_id"/>
+            <column name="buyer_id"/>
+            <column name="seller_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 8. Messages table -->
+    <changeSet id="8" author="rodya">
+        <createTable tableName="messages">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="conversation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sender_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_read" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="messages" baseColumnNames="conversation_id"
+                                 referencedTableName="conversations" referencedColumnNames="id"
+                                 constraintName="fk_msg_conv"/>
+        <addForeignKeyConstraint baseTableName="messages" baseColumnNames="sender_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_msg_sender"/>
+        <createIndex tableName="messages" indexName="idx_msg_conv_created">
+            <column name="conversation_id"/>
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 9. Reviews table -->
+    <changeSet id="9" author="rodya">
+        <createTable tableName="reviews">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="reviewer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seller_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_text" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="reviews" baseColumnNames="reviewer_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_rev_reviewer"/>
+        <addForeignKeyConstraint baseTableName="reviews" baseColumnNames="seller_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_rev_seller"/>
+        <addUniqueConstraint tableName="reviews" columnNames="reviewer_id, seller_id"
+                             constraintName="uq_reviewer_seller"/>
+    </changeSet>
+
+</databaseChangeLog>

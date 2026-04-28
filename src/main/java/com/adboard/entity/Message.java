@@ -30,7 +30,7 @@ public class Message {
   private String content;
 
   @Column(name = "is_read", nullable = false)
-  private boolean isRead = false;
+  private boolean read;
 
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
@@ -38,5 +38,6 @@ public class Message {
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();
+    read = false;
   }
 }

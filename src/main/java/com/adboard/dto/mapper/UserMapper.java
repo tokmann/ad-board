@@ -5,12 +5,21 @@ import com.adboard.dto.request.auth.RegisterRequestDto;
 import com.adboard.dto.response.UserPreviewDto;
 import com.adboard.dto.response.user.UserProfileDto;
 import com.adboard.entity.User;
+import com.adboard.entity.reference.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface UserMapper {
 
   @Mapping(target = "id", ignore = true)
@@ -21,8 +30,14 @@ public interface UserMapper {
   User toEntity(RegisterRequestDto dto);
 
   UserPreviewDto toPreviewDto(User user);
-
   UserProfileDto toProfileDto(User user);
 
   void updateEntityFromDto(ProfileUpdateRequestDto dto, @MappingTarget User user);
+
+  default Set<String> roles(Set<Role> roles) {
+    if (roles == null) return Collections.emptySet();
+    return roles.stream()
+        .map(Role::getName)
+        .collect(Collectors.toSet());
+  }
 }

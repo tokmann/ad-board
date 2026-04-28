@@ -7,8 +7,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = UserMapper.class)
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    uses = UserMapper.class,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface CommentMapper {
 
   @Mapping(target = "id", ignore = true)

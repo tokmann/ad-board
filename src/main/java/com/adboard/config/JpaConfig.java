@@ -8,6 +8,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -34,13 +35,15 @@ public class JpaConfig {
     config.setJdbcUrl(env.getProperty("jdbc.url"));
     config.setUsername(env.getProperty("jdbc.username"));
     config.setPassword(env.getProperty("jdbc.password"));
+    config.setDriverClassName("org.postgresql.Driver");
     return new HikariDataSource(config);
   }
 
   @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+  @DependsOn("liquibase")
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
     LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-    em.setDataSource(dataSource());
+    em.setDataSource(dataSource);
     em.setPackagesToScan("com.adboard.entity");
 
     HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -50,7 +53,7 @@ public class JpaConfig {
 
     Properties jpaProperties = new Properties();
     jpaProperties.put(AvailableSettings.HBM2DDL_AUTO, "validate");
-    jpaProperties.put(AvailableSettings.FORMAT_SQL, false);
+    jpaProperties.put(AvailableSettings.SHOW_SQL, false);
     em.setJpaProperties(jpaProperties);
 
     return em;
