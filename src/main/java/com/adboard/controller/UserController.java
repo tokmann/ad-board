@@ -30,6 +30,7 @@ public class UserController {
   public ResponseEntity<UserProfileDto> getMyProfile(Authentication authentication) {
     log.info("Fetching profile for: {}", authentication.getName());
     UserProfileDto profile = userService.getMyProfile(authentication);
+    log.info("Profile data successfully sent for: {}", authentication.getName());
     return ResponseEntity.ok(profile);
   }
 

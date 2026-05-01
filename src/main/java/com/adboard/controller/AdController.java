@@ -55,6 +55,7 @@ public class AdController {
   public ResponseEntity<AdResponseDto> getAdById(@PathVariable Long id) {
     log.info("Fetching ad details: id={}", id);
     AdResponseDto ad = adService.getAdById(id);
+    log.info("Ad details successfully fetched for id={}", id);
     return ResponseEntity.ok(ad);
   }
 
@@ -88,14 +89,5 @@ public class AdController {
     adService.deleteAd(id, authentication);
     log.info("Ad deleted successfully: id={}", id);
     return ResponseEntity.noContent().build();
-  }
-
-  @Operation(summary = "Activate paid promotion in the top")
-  @PostMapping("/{id}/promote")
-  public ResponseEntity<AdResponseDto> promoteAd(@PathVariable Long id, Authentication authentication) {
-    log.info("Promote ad request: id={}, user={}", id, authentication.getName());
-    AdResponseDto promotedAd = adService.promoteAd(id, authentication);
-    log.info("Ad promoted successfully: id={}, expires={}", id, promotedAd.getPromoteExpiresAt());
-    return ResponseEntity.ok(promotedAd);
   }
 }

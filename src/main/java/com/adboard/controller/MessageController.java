@@ -39,6 +39,7 @@ public class MessageController {
       Authentication authentication) {
     log.info("Fetching chat: ad={}, withUser={}, myUser={}", adId, withUserId, authentication.getName());
     PageResponse<MessageResponseDto> result = messageService.getConversationMessages(adId, withUserId, page, size, authentication);
+    log.info("Fetched chat for: ad={}, withUser={}", adId, withUserId);
     return ResponseEntity.ok(result);
   }
 

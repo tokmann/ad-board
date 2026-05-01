@@ -5,8 +5,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
@@ -23,18 +23,20 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource("classpath:jdbc.properties")
+@PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
 public class JpaConfig {
 
-  private final Environment env;
-
   @Bean
-  public DataSource dataSource() {
+  public DataSource dataSource(
+      @Value("${jdbc.url}") String url,
+      @Value("${jdbc.username}") String username,
+      @Value("${jdbc.password}") String password
+  ) {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(env.getProperty("jdbc.url"));
-    config.setUsername(env.getProperty("jdbc.username"));
-    config.setPassword(env.getProperty("jdbc.password"));
+    config.setJdbcUrl(url);
+    config.setUsername(username);
+    config.setPassword(password);
     config.setDriverClassName("org.postgresql.Driver");
     return new HikariDataSource(config);
   }
