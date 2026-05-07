@@ -1,8 +1,8 @@
 package com.adboard.controller;
 
-import com.adboard.dto.request.ReviewRequestDto;
+import com.adboard.dto.request.review.ReviewRequestDto;
 import com.adboard.dto.response.PageResponse;
-import com.adboard.dto.response.ReviewResponseDto;
+import com.adboard.dto.response.review.ReviewResponseDto;
 import com.adboard.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,9 +35,8 @@ public class ReviewController {
       @Parameter(description = "Seller ID") @PathVariable Long sellerId,
       @Valid @RequestBody ReviewRequestDto request,
       Authentication authentication) {
-    log.info("Adding review for seller: {} by user: {}", sellerId, authentication.getName());
+    log.debug("REST request to add review for seller: {} by user: {}", sellerId, authentication.getName());
     ReviewResponseDto created = reviewService.addReview(sellerId, request, authentication);
-    log.info("Review added successfully: id={}", created.getId());
     return ResponseEntity.status(201).body(created);
   }
 
@@ -47,9 +46,8 @@ public class ReviewController {
       @Parameter(description = "Seller ID") @PathVariable Long sellerId,
       @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
-    log.info("Fetching reviews for seller: {}, page={}, size={}", sellerId, page, size);
+    log.debug("REST request to fetch reviews for seller: {}, page={}", sellerId, page);
     PageResponse<ReviewResponseDto> result = reviewService.getReviewsBySellerId(sellerId, page, size);
-    log.info("Fetched {} reviews for seller {}", result.getContent().size(), sellerId);
     return ResponseEntity.ok(result);
   }
 }

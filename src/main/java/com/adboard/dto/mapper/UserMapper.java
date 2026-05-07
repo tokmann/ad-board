@@ -2,7 +2,7 @@ package com.adboard.dto.mapper;
 
 import com.adboard.dto.request.user.ProfileUpdateRequestDto;
 import com.adboard.dto.request.auth.RegisterRequestDto;
-import com.adboard.dto.response.UserPreviewDto;
+import com.adboard.dto.response.user.UserPreviewDto;
 import com.adboard.dto.response.user.UserProfileDto;
 import com.adboard.entity.User;
 import com.adboard.entity.reference.Role;

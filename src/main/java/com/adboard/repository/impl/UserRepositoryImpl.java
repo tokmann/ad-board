@@ -41,6 +41,18 @@ public class UserRepositoryImpl implements UserRepository {
   }
 
   @Override
+  public Optional<User> findById(Long id) {
+    try {
+      User user = entityManager.createQuery(UserQueries.FIND_BY_ID, User.class)
+          .setParameter("id", id)
+          .getSingleResult();
+      return Optional.of(user);
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
   public void save(User user) {
     if (user.getId() == null) {
       entityManager.persist(user);

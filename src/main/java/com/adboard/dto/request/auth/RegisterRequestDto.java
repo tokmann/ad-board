@@ -21,10 +21,10 @@ public class RegisterRequestDto {
   private String password;
 
   @NotBlank(message = "Phone is required")
-  @Size(max = 20)
+  @Size(max = 20, message = "Phone is too long")
   private String phone;
 
   @NotBlank(message = "City is required")
-  @Size(max = 50)
+  @Size(max = 50, message = "City name is too long")
   private String city;
 }

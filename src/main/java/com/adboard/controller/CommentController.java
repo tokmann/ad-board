@@ -36,9 +36,8 @@ public class CommentController {
       @Parameter(description = "Ad ID") @PathVariable Long adId,
       @Parameter(description = "Page number (starting from 0)") @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
-    log.info("Fetching comments for ad: {}, page={}, size={}", adId, page, size);
+    log.debug("REST request to fetch comments for ad: {}, page={}", adId, page);
     PageResponse<CommentResponseDto> result = commentService.getCommentsByAdId(adId, page, size);
-    log.info("Fetched {} comments for ad {}", result.getContent().size(), adId);
     return ResponseEntity.ok(result);
   }
 
@@ -48,9 +47,8 @@ public class CommentController {
       @Parameter(description = "Ad ID") @PathVariable Long adId,
       @Valid @RequestBody CommentRequestDto request,
       Authentication authentication) {
-    log.info("Adding comment to ad: {} by user: {}", adId, authentication.getName());
+    log.debug("REST request to add comment to ad: {} by user: {}", adId, authentication.getName());
     CommentResponseDto created = commentService.addComment(adId, request, authentication);
-    log.info("Comment added successfully: id={}, isReply={}", created.getId(), request.getParentCommentId() != null);
     return ResponseEntity.status(201).body(created);
   }
 
@@ -60,9 +58,8 @@ public class CommentController {
       @Parameter(description = "Ad ID") @PathVariable Long adId,
       @Parameter(description = "Comment ID") @PathVariable Long commentId,
       Authentication authentication) {
-    log.info("Deleting comment: {} from ad: {} by user: {}", commentId, adId, authentication.getName());
+    log.debug("REST request to delete comment: {} for ad: {}", commentId, adId);
     commentService.deleteComment(adId, commentId, authentication);
-    log.info("Comment deleted successfully: {}", commentId);
     return ResponseEntity.noContent().build();
   }
 }

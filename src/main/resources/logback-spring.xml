@@ -16,7 +16,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.adboard" level="INFO" additivity="false">
+    <logger name="com.adboard" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>

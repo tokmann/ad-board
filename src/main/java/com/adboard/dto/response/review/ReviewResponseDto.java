@@ -1,5 +1,6 @@
-package com.adboard.dto.response;
+package com.adboard.dto.response.review;
 
+import com.adboard.dto.response.user.UserPreviewDto;
 import lombok.Data;
 import java.time.LocalDateTime;
 

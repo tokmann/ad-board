@@ -1,7 +1,7 @@
 package com.adboard.dto.response.ad;
 
 import com.adboard.dto.response.category.CategoryDto;
-import com.adboard.dto.response.UserPreviewDto;
+import com.adboard.dto.response.user.UserPreviewDto;
 import com.adboard.entity.enums.AdStatus;
 import lombok.Data;
 import java.math.BigDecimal;

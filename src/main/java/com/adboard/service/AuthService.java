@@ -7,6 +7,7 @@ import com.adboard.dto.response.auth.AuthResponseDto;
 import com.adboard.dto.response.user.UserProfileDto;
 import com.adboard.entity.User;
 import com.adboard.entity.reference.Role;
+import com.adboard.exception.UserAlreadyExistsException;
 import com.adboard.repository.RoleRepository;
 import com.adboard.repository.UserRepository;
 import com.adboard.security.JwtTokenProvider;
@@ -38,24 +39,20 @@ public class AuthService {
   @Transactional
   public AuthResponseDto register(RegisterRequestDto request) {
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-      log.warn("Registration failed: email {} already exists", request.getEmail());
-      throw new IllegalArgumentException("Email already registered: " + request.getEmail());
+      throw new UserAlreadyExistsException("Email already registered: " + request.getEmail());
     }
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-      throw new IllegalArgumentException("Username already taken: " + request.getUsername());
+      throw new UserAlreadyExistsException("Username already taken: " + request.getUsername());
     }
 
     Role userRole = roleRepository.findByName("ROLE_USER")
-        .orElseThrow(() -> {
-          log.error("Default role 'ROLE_USER' not found in database. Check migrations.");
-          return new IllegalStateException("Configuration error: default role missing");
-        });
+        .orElseThrow(() -> new IllegalStateException("Configuration error: default role 'ROLE_USER' missing"));
 
     User user = userMapper.toEntity(request);
     user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
     user.setRoles(Set.of(userRole));
-
     userRepository.save(user);
+
     log.info("User registered: id={}, email={}", user.getId(), user.getEmail());
 
     Authentication authentication = createAuthentication(user);
@@ -74,9 +71,9 @@ public class AuthService {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
     );
-
     String token = jwtTokenProvider.generateToken(authentication);
-    log.info("User logged in: {}", request.getEmail());
+
+    log.info("User {} successfully logged in", request.getEmail());
 
     UserProfileDto profileDto = userService.getMyProfile(authentication);
     AuthResponseDto response = new AuthResponseDto();

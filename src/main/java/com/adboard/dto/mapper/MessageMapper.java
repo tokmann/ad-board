@@ -22,5 +22,6 @@ public interface MessageMapper {
   @Mapping(target = "read", constant = "false")
   Message toEntity(MessageRequestDto dto);
 
+  @Mapping(source = "sender", target = "sender")
   MessageResponseDto toResponseDto(Message message);
 }

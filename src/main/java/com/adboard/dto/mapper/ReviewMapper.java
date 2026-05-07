@@ -1,7 +1,7 @@
 package com.adboard.dto.mapper;
 
-import com.adboard.dto.request.ReviewRequestDto;
-import com.adboard.dto.response.ReviewResponseDto;
+import com.adboard.dto.request.review.ReviewRequestDto;
+import com.adboard.dto.response.review.ReviewResponseDto;
 import com.adboard.entity.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,5 +21,6 @@ public interface ReviewMapper {
   @Mapping(target = "createdAt", ignore = true)
   Review toEntity(ReviewRequestDto dto);
 
+  @Mapping(source = "reviewer", target = "reviewer")
   ReviewResponseDto toResponseDto(Review review);
 }

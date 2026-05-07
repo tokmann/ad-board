@@ -4,6 +4,7 @@ import com.adboard.dto.mapper.UserMapper;
 import com.adboard.dto.request.user.ProfileUpdateRequestDto;
 import com.adboard.dto.response.user.UserProfileDto;
 import com.adboard.entity.User;
+import com.adboard.exception.ResourceNotFoundException;
 import com.adboard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,28 +27,19 @@ public class UserService implements UserDetailsService {
   @Transactional(readOnly = true)
   public UserProfileDto getMyProfile(Authentication authentication) {
     String email = authentication.getName();
-
-    log.debug("Loading profile for authenticated user: {}", email);
-
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> {
-          log.error("Authenticated user not found in DB: {}", email);
-          return new IllegalArgumentException("User not found: " + email);
-        });
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+    log.info("Profile data successfully retrieved for user: {}", user.getEmail());
+
     return userMapper.toProfileDto(user);
   }
 
   @Transactional
   public UserProfileDto updateMyProfile(ProfileUpdateRequestDto request, Authentication authentication) {
     String email = authentication.getName();
-
-    log.info("Updating profile for user: {}", email);
-
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> {
-          log.error("Authenticated user not found in DB: {}", email);
-          return new IllegalArgumentException("User not found: " + email);
-        });
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
     userMapper.updateEntityFromDto(request, user);
     userRepository.save(user);
@@ -61,10 +53,8 @@ public class UserService implements UserDetailsService {
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> {
-          log.warn("User not found by email: {}", email);
-          return new UsernameNotFoundException("User not found: " + email);
-        });
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
     var authorities = user.getRoles().stream()
         .map(role -> new SimpleGrantedAuthority(role.getName()))
         .toList();

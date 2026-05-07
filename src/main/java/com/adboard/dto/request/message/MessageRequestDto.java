@@ -8,7 +8,7 @@ import lombok.Data;
 public class MessageRequestDto {
 
   @NotBlank(message = "Message content is required")
-  @Size(max = 4000)
+  @Size(max = 4000, message = "Message content is too long")
   private String content;
 
   private Long receiverId;

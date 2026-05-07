@@ -28,9 +28,8 @@ public class UserController {
   @Operation(summary = "Get current profile data")
   @GetMapping("/me")
   public ResponseEntity<UserProfileDto> getMyProfile(Authentication authentication) {
-    log.info("Fetching profile for: {}", authentication.getName());
+    log.debug("REST request to get profile for user: {}", authentication.getName());
     UserProfileDto profile = userService.getMyProfile(authentication);
-    log.info("Profile data successfully sent for: {}", authentication.getName());
     return ResponseEntity.ok(profile);
   }
 
@@ -39,9 +38,8 @@ public class UserController {
   public ResponseEntity<UserProfileDto> updateMyProfile(
       @Valid @RequestBody ProfileUpdateRequestDto request,
       Authentication authentication) {
-    log.info("Updating profile for: {}", authentication.getName());
+    log.debug("REST request to update profile for user: {}", authentication.getName());
     UserProfileDto updatedProfile = userService.updateMyProfile(request, authentication);
-    log.info("Profile updated successfully for: {}", updatedProfile.getUsername());
     return ResponseEntity.ok(updatedProfile);
   }
 }

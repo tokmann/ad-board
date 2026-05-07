@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 public class AdCreateRequestDto {
 
   @NotBlank(message = "Title is required")
-  @Size(max = 100)
+  @Size(max = 100, message = "Title is too long")
   private String title;
 
-  @Size(max = 5000)
+  @Size(max = 5000, message = "Description is too long")
   private String description;
 
   @NotNull(message = "Price is required")

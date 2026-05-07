@@ -8,7 +8,7 @@ import lombok.Data;
 public class CommentRequestDto {
 
   @NotBlank(message = "Comment text is required")
-  @Size(max = 2000)
+  @Size(max = 2000, message = "Comment text is too long")
   private String text;
 
   private Long parentCommentId;

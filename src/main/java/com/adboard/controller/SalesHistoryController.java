@@ -30,9 +30,8 @@ public class SalesHistoryController {
       @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size,
       Authentication authentication) {
-    log.info("Fetching sales history for user: {}, page={}, size={}", authentication.getName(), page, size);
+    log.debug("REST request to get sales history for user: {}, page={}", authentication.getName(), page);
     PageResponse<AdResponseDto> result = adService.getSalesHistory(page, size, authentication);
-    log.info("Fetched {} sold ads for user {}", result.getContent().size(), authentication.getName());
     return ResponseEntity.ok(result);
   }
 }

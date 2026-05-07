@@ -23,7 +23,5 @@ public interface CommentMapper {
   @Mapping(target = "createdAt", ignore = true)
   Comment toEntity(CommentRequestDto dto);
 
-  void updateEntityFromDto(CommentRequestDto dto, @MappingTarget Comment comment);
-
   CommentResponseDto toResponseDto(Comment comment);
 }

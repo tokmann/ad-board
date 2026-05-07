@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,19 +44,16 @@ public class AdController {
       @Parameter(description = "Category ID") @RequestParam(required = false) Long categoryId,
       @Parameter(description = "Min price") @RequestParam(required = false) BigDecimal minPrice,
       @Parameter(description = "Max price") @RequestParam(required = false) BigDecimal maxPrice) {
-    log.info("Search request: page={}, size={}, keyword={}, categoryId={}, minPrice={}, maxPrice={}",
-        page, size, keyword, categoryId, minPrice, maxPrice);
+    log.debug("REST request to search ads: page={}, size={}, keyword={}, categoryId={}", page, size, keyword, categoryId);
     PageResponse<AdResponseDto> result = adService.searchAds(page, size, keyword, categoryId, minPrice, maxPrice);
-    log.info("Search completed. Found {} ads on page {}", result.getContent().size(), page);
     return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "Get ad by ID")
   @GetMapping("/{id}")
   public ResponseEntity<AdResponseDto> getAdById(@PathVariable Long id) {
-    log.info("Fetching ad details: id={}", id);
+    log.debug("REST request to get ad by id: {}", id);
     AdResponseDto ad = adService.getAdById(id);
-    log.info("Ad details successfully fetched for id={}", id);
     return ResponseEntity.ok(ad);
   }
 
@@ -64,9 +62,8 @@ public class AdController {
   public ResponseEntity<AdResponseDto> createAd(
       @Valid @RequestBody AdCreateRequestDto request,
       Authentication authentication) {
-    log.info("Create ad request by user: {}", authentication.getName());
+    log.debug("REST request to create ad by user: {}", authentication.getName());
     AdResponseDto createdAd = adService.createAd(request, authentication);
-    log.info("Ad created successfully: id={}", createdAd.getId());
     return ResponseEntity.status(201).body(createdAd);
   }
 
@@ -76,18 +73,28 @@ public class AdController {
       @PathVariable Long id,
       @Valid @RequestBody AdUpdateRequestDto request,
       Authentication authentication) {
-    log.info("Update ad request: id={}, user={}", id, authentication.getName());
+    log.debug("REST request to update ad: id={}, user={}", id, authentication.getName());
     AdResponseDto updatedAd = adService.updateAd(id, request, authentication);
-    log.info("Ad updated successfully: id={}", id);
     return ResponseEntity.ok(updatedAd);
   }
 
   @Operation(summary = "Delete ad")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteAd(@PathVariable Long id, Authentication authentication) {
-    log.info("Delete ad request: id={}, user={}", id, authentication.getName());
+    log.debug("REST request to delete ad: id={}, user={}", id, authentication.getName());
     adService.deleteAd(id, authentication);
-    log.info("Ad deleted successfully: id={}", id);
     return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "Publish ad after moderation (Admin only)")
+  @PutMapping("/{id}/publish")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<AdResponseDto> publishAd(
+      @Parameter(description = "Ad ID") @PathVariable Long id,
+      Authentication authentication) {
+
+    log.debug("REST request to publish ad: {} by admin: {}", id, authentication.getName());
+    AdResponseDto published = adService.publishAd(id, authentication);
+    return ResponseEntity.ok(published);
   }
 }

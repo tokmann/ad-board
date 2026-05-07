@@ -55,11 +55,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
           authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
           SecurityContextHolder.getContext().setAuthentication(authToken);
 
-          log.debug("Authenticated user: {} via JWT", username);
+          log.info("User {} successfully authenticated via JWT", username);
         }
       }
     } catch (Exception e) {
-      log.warn("Security error processing JWT: {}", e.getMessage());
+      log.error("Cannot set user authentication: {}", e.getMessage());
     }
     filterChain.doFilter(request, response);
   }

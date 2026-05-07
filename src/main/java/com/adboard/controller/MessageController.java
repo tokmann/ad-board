@@ -37,7 +37,7 @@ public class MessageController {
       @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(defaultValue = "20") int size,
       Authentication authentication) {
-    log.info("Fetching chat: ad={}, withUser={}, myUser={}", adId, withUserId, authentication.getName());
+    log.debug("REST request to get chat history: ad={}, withUser={}, myUser={}", adId, withUserId, authentication.getName());
     PageResponse<MessageResponseDto> result = messageService.getConversationMessages(adId, withUserId, page, size, authentication);
     log.info("Fetched chat for: ad={}, withUser={}", adId, withUserId);
     return ResponseEntity.ok(result);
@@ -49,9 +49,8 @@ public class MessageController {
       @Parameter(description = "Ad ID") @PathVariable Long adId,
       @Valid @RequestBody MessageRequestDto request,
       Authentication authentication) {
-    log.info("Sending message in ad: {}, to user: {}", adId, request.getReceiverId());
+    log.debug("REST request to send message in ad: {} to user: {}", adId, request.getReceiverId());
     MessageResponseDto sentMessage = messageService.sendMessage(adId, request, authentication);
-    log.info("Message sent successfully: id={}", sentMessage.getId());
     return ResponseEntity.status(201).body(sentMessage);
   }
 }

@@ -21,6 +21,7 @@ public interface AdMapper {
   @Mapping(target = "seller", ignore = true)
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "status", expression = "java(com.adboard.entity.enums.AdStatus.DRAFT)")
+  @Mapping(target = "isPromoted", constant = "false")
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "promoteExpiresAt", ignore = true)
@@ -29,6 +30,12 @@ public interface AdMapper {
   @Mapping(target = "version", ignore = true)
   Ad toEntity(AdCreateRequestDto dto);
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "seller", ignore = true)
+  @Mapping(target = "category", ignore = true)
+  @Mapping(target = "buyer", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
   void updateEntityFromDto(AdUpdateRequestDto dto, @MappingTarget Ad ad);
 
   AdResponseDto toResponseDto(Ad ad);

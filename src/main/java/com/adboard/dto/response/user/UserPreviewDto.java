@@ -1,4 +1,4 @@
-package com.adboard.dto.response;
+package com.adboard.dto.response.user;
 
 import lombok.Data;
 

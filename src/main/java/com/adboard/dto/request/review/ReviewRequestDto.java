@@ -1,4 +1,4 @@
-package com.adboard.dto.request;
+package com.adboard.dto.request.review;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -14,6 +14,6 @@ public class ReviewRequestDto {
   @Max(value = 5, message = "Rating must be at most 5")
   private Integer rating;
 
-  @Size(max = 2000)
+  @Size(max = 2000, message = "Comment text is too long")
   private String commentText;
 }

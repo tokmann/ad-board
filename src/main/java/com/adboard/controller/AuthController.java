@@ -27,18 +27,16 @@ public class AuthController {
   @Operation(summary = "New user registration")
   @PostMapping("/register")
   public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-    log.info("Registration request for user: {}", request.getUsername());
+    log.debug("REST request to register user: {}", request.getEmail());
     AuthResponseDto response = authService.register(request);
-    log.info("User registered successfully: {}", response.getUser().getUsername());
     return ResponseEntity.ok(response);
   }
 
   @Operation(summary = "Login")
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
-    log.info("Login attempt for email: {}", request.getEmail());
+    log.debug("REST request to login: {}", request.getEmail());
     AuthResponseDto response = authService.login(request);
-    log.info("User logged in successfully: {}", response.getUser().getUsername());
     return ResponseEntity.ok(response);
   }
 }

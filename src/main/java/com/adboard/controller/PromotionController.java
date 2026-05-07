@@ -28,9 +28,8 @@ public class PromotionController {
   public ResponseEntity<AdResponseDto> promoteAd(
       @Parameter(description = "Ad ID") @PathVariable Long adId,
       Authentication authentication) {
-    log.info("Promoting ad: {} by user: {}", adId, authentication.getName());
+    log.debug("REST request to promote ad: {} by user: {}", adId, authentication.getName());
     AdResponseDto promoted = adService.promoteAd(adId, authentication);
-    log.info("Ad promoted successfully: id={}, expires={}", adId, promoted.getPromoteExpiresAt());
     return ResponseEntity.ok(promoted);
   }
 }
