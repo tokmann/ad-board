@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +22,9 @@ public class GlobalExceptionHandler {
   // 400: Validation error/Bad arguments
   @ExceptionHandler({
       MethodArgumentNotValidException.class,
-      IllegalArgumentException.class
+      IllegalArgumentException.class,
+      MethodArgumentTypeMismatchException.class,
+      MissingServletRequestParameterException.class
   })
   public ResponseEntity<ErrorResponseDto> handleValidation(Exception ex, HttpServletRequest request) {
     String message = (ex instanceof MethodArgumentNotValidException validEx)
@@ -61,6 +65,7 @@ public class GlobalExceptionHandler {
       AdAlreadyPromotedException.class,
       ReviewAlreadyExistsException.class,
       ConversationBlockedException.class,
+      InvalidAdStatusException.class
   })
   public ResponseEntity<ErrorResponseDto> handleBusinessConflict(RuntimeException ex, HttpServletRequest request) {
     log.error("Business logic conflict: {}", ex.getMessage());

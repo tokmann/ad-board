@@ -27,8 +27,8 @@ public class SalesHistoryController {
   @Operation(summary = "Get the sales history of the current user")
   @GetMapping
   public ResponseEntity<PageResponse<AdResponseDto>> getSalesHistory(
-      @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-      @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size,
+      @Parameter(description = "Page number") @RequestParam(name = "page", defaultValue = "0") int page,
+      @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size,
       Authentication authentication) {
     log.debug("REST request to get sales history for user: {}, page={}", authentication.getName(), page);
     PageResponse<AdResponseDto> result = adService.getSalesHistory(page, size, authentication);

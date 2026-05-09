@@ -14,6 +14,7 @@ public class AdUpdateRequestDto {
   @Size(max = 100, message = "Title is too long")
   private String title;
 
+  @NotBlank(message = "Description is required")
   @Size(max = 5000, message = "Description is too long")
   private String description;
 

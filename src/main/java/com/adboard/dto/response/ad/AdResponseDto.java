@@ -3,7 +3,10 @@ package com.adboard.dto.response.ad;
 import com.adboard.dto.response.category.CategoryDto;
 import com.adboard.dto.response.user.UserPreviewDto;
 import com.adboard.entity.enums.AdStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

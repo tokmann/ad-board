@@ -27,11 +27,19 @@ public interface UserMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "version", ignore = true)
   User toEntity(RegisterRequestDto dto);
 
   UserPreviewDto toPreviewDto(User user);
   UserProfileDto toProfileDto(User user);
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "email", ignore = true)
+  @Mapping(target = "passwordHash", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "version", ignore = true)
   void updateEntityFromDto(ProfileUpdateRequestDto dto, @MappingTarget User user);
 
   default Set<String> roles(Set<Role> roles) {

@@ -32,10 +32,10 @@ public class MessageController {
   @Operation(summary = "Get the chat history with a specific user")
   @GetMapping
   public ResponseEntity<PageResponse<MessageResponseDto>> getMessages(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
-      @Parameter(description = "Companion ID (required)") @RequestParam Long withUserId,
-      @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-      @Parameter(description = "Page size") @RequestParam(defaultValue = "20") int size,
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
+      @Parameter(description = "Companion ID (required)") @RequestParam("withUserId") Long withUserId,
+      @Parameter(description = "Page number") @RequestParam(name = "page", defaultValue = "0") int page,
+      @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "20") int size,
       Authentication authentication) {
     log.debug("REST request to get chat history: ad={}, withUser={}, myUser={}", adId, withUserId, authentication.getName());
     PageResponse<MessageResponseDto> result = messageService.getConversationMessages(adId, withUserId, page, size, authentication);
@@ -46,7 +46,7 @@ public class MessageController {
   @Operation(summary = "Send message (creates a chat if there isn't one)")
   @PostMapping
   public ResponseEntity<MessageResponseDto> sendMessage(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       @Valid @RequestBody MessageRequestDto request,
       Authentication authentication) {
     log.debug("REST request to send message in ad: {} to user: {}", adId, request.getReceiverId());

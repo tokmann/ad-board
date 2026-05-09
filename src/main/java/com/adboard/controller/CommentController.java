@@ -33,9 +33,9 @@ public class CommentController {
   @Operation(summary = "Get a list of comments for an ad with pagination")
   @GetMapping
   public ResponseEntity<PageResponse<CommentResponseDto>> getComments(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
-      @Parameter(description = "Page number (starting from 0)") @RequestParam(defaultValue = "0") int page,
-      @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
+      @Parameter(description = "Page number (starting from 0)") @RequestParam(name = "page", defaultValue = "0") int page,
+      @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size) {
     log.debug("REST request to fetch comments for ad: {}, page={}", adId, page);
     PageResponse<CommentResponseDto> result = commentService.getCommentsByAdId(adId, page, size);
     return ResponseEntity.ok(result);
@@ -44,7 +44,7 @@ public class CommentController {
   @Operation(summary = "Add a comment or reply to a comment")
   @PostMapping
   public ResponseEntity<CommentResponseDto> addComment(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       @Valid @RequestBody CommentRequestDto request,
       Authentication authentication) {
     log.debug("REST request to add comment to ad: {} by user: {}", adId, authentication.getName());
@@ -55,8 +55,8 @@ public class CommentController {
   @Operation(summary = "Delete comment (available to author or administrator)")
   @DeleteMapping("/{commentId}")
   public ResponseEntity<Void> deleteComment(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
-      @Parameter(description = "Comment ID") @PathVariable Long commentId,
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
+      @Parameter(description = "Comment ID") @PathVariable("commentId") Long commentId,
       Authentication authentication) {
     log.debug("REST request to delete comment: {} for ad: {}", commentId, adId);
     commentService.deleteComment(adId, commentId, authentication);

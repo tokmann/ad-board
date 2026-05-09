@@ -26,7 +26,7 @@ public class PromotionController {
   @Operation(summary = "Activate paid ad promotion")
   @PostMapping
   public ResponseEntity<AdResponseDto> promoteAd(
-      @Parameter(description = "Ad ID") @PathVariable Long adId,
+      @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       Authentication authentication) {
     log.debug("REST request to promote ad: {} by user: {}", adId, authentication.getName());
     AdResponseDto promoted = adService.promoteAd(adId, authentication);

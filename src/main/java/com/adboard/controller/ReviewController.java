@@ -32,7 +32,7 @@ public class ReviewController {
   @Operation(summary = "Leave comment for the seller")
   @PostMapping
   public ResponseEntity<ReviewResponseDto> addReview(
-      @Parameter(description = "Seller ID") @PathVariable Long sellerId,
+      @Parameter(description = "Seller ID") @PathVariable("sellerId") Long sellerId,
       @Valid @RequestBody ReviewRequestDto request,
       Authentication authentication) {
     log.debug("REST request to add review for seller: {} by user: {}", sellerId, authentication.getName());
@@ -43,9 +43,9 @@ public class ReviewController {
   @Operation(summary = "Get comments about the seller")
   @GetMapping
   public ResponseEntity<PageResponse<ReviewResponseDto>> getReviews(
-      @Parameter(description = "Seller ID") @PathVariable Long sellerId,
-      @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-      @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
+      @Parameter(description = "Seller ID") @PathVariable("sellerId") Long sellerId,
+      @Parameter(description = "Page number") @RequestParam(name = "page", defaultValue = "0") int page,
+      @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size) {
     log.debug("REST request to fetch reviews for seller: {}, page={}", sellerId, page);
     PageResponse<ReviewResponseDto> result = reviewService.getReviewsBySellerId(sellerId, page, size);
     return ResponseEntity.ok(result);

@@ -38,20 +38,20 @@ public class AdController {
   @Operation(summary = "Search and filter ads with pagination")
   @GetMapping
   public ResponseEntity<PageResponse<AdResponseDto>> searchAds(
-      @Parameter(description = "Page number (starting from 0)") @RequestParam(defaultValue = "0") int page,
-      @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size,
-      @Parameter(description = "Search keyword") @RequestParam(required = false) String keyword,
-      @Parameter(description = "Category ID") @RequestParam(required = false) Long categoryId,
-      @Parameter(description = "Min price") @RequestParam(required = false) BigDecimal minPrice,
-      @Parameter(description = "Max price") @RequestParam(required = false) BigDecimal maxPrice) {
+      @Parameter(description = "Page number (starting from 0)") @RequestParam(name = "page", defaultValue = "0") int page,
+      @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size,
+      @Parameter(description = "Search keyword") @RequestParam(name = "keyword", required = false) String keyword,
+      @Parameter(description = "Category ID") @RequestParam(name = "categoryId", required = false) Long categoryId,
+      @Parameter(description = "Min price") @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+      @Parameter(description = "Max price") @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice) {
     log.debug("REST request to search ads: page={}, size={}, keyword={}, categoryId={}", page, size, keyword, categoryId);
     PageResponse<AdResponseDto> result = adService.searchAds(page, size, keyword, categoryId, minPrice, maxPrice);
     return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "Get ad by ID")
-  @GetMapping("/{id}")
-  public ResponseEntity<AdResponseDto> getAdById(@PathVariable Long id) {
+  @GetMapping("{id}")
+  public ResponseEntity<AdResponseDto> getAdById(@PathVariable("id") Long id) {
     log.debug("REST request to get ad by id: {}", id);
     AdResponseDto ad = adService.getAdById(id);
     return ResponseEntity.ok(ad);
@@ -70,7 +70,7 @@ public class AdController {
   @Operation(summary = "Edit ad")
   @PutMapping("/{id}")
   public ResponseEntity<AdResponseDto> updateAd(
-      @PathVariable Long id,
+      @PathVariable("id") Long id,
       @Valid @RequestBody AdUpdateRequestDto request,
       Authentication authentication) {
     log.debug("REST request to update ad: id={}, user={}", id, authentication.getName());
@@ -80,7 +80,7 @@ public class AdController {
 
   @Operation(summary = "Delete ad")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteAd(@PathVariable Long id, Authentication authentication) {
+  public ResponseEntity<Void> deleteAd(@PathVariable("id") Long id, Authentication authentication) {
     log.debug("REST request to delete ad: id={}, user={}", id, authentication.getName());
     adService.deleteAd(id, authentication);
     return ResponseEntity.noContent().build();
@@ -90,7 +90,7 @@ public class AdController {
   @PutMapping("/{id}/publish")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<AdResponseDto> publishAd(
-      @Parameter(description = "Ad ID") @PathVariable Long id,
+      @Parameter(description = "Ad ID") @PathVariable("id") Long id,
       Authentication authentication) {
 
     log.debug("REST request to publish ad: {} by admin: {}", id, authentication.getName());
