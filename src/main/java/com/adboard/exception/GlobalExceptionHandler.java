@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
   })
   public ResponseEntity<ErrorResponseDto> handleUnauthorized(Exception ex, HttpServletRequest request) {
     log.error("Authentication failed: {}", ex.getMessage());
-    return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password", request);
+    return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password / No JWT provided", request);
   }
 
   // 403: Access Violation
