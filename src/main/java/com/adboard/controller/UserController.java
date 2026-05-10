@@ -28,7 +28,7 @@ public class UserController {
   @Operation(summary = "Get current profile data")
   @GetMapping("/me")
   public ResponseEntity<UserProfileDto> getMyProfile(Authentication authentication) {
-    log.debug("REST request to get profile for user: {}", authentication.getName());
+    log.info("REST request to get profile for user: {}", authentication.getName());
     UserProfileDto profile = userService.getMyProfile(authentication);
     return ResponseEntity.ok(profile);
   }
@@ -38,7 +38,7 @@ public class UserController {
   public ResponseEntity<UserProfileDto> updateMyProfile(
       @Valid @RequestBody ProfileUpdateRequestDto request,
       Authentication authentication) {
-    log.debug("REST request to update profile for user: {}", authentication.getName());
+    log.info("REST request to update profile for user: {}", authentication.getName());
     UserProfileDto updatedProfile = userService.updateMyProfile(request, authentication);
     return ResponseEntity.ok(updatedProfile);
   }

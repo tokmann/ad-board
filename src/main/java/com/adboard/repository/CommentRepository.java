@@ -11,6 +11,7 @@ public interface CommentRepository {
   long countRootByAdId(Long adId);
   Optional<Comment> findByIdWithAuthor(Long id);
   List<Comment> findRepliesByParentId(Long parentId);
+  List<Comment> findAllByAdId(Long adId);
   void save(Comment comment);
   void delete(Comment comment);
 }

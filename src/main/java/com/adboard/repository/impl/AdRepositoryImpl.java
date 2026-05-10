@@ -1,6 +1,8 @@
 package com.adboard.repository.impl;
 
 import com.adboard.entity.Ad;
+import com.adboard.entity.Review;
+import com.adboard.entity.User;
 import com.adboard.entity.enums.AdStatus;
 import com.adboard.repository.AdRepository;
 import com.adboard.repository.queries.AdQueries;
@@ -9,9 +11,11 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -71,11 +75,7 @@ public class AdRepositoryImpl implements AdRepository {
 
     List<Predicate> predicates = new ArrayList<>();
 
-    if (status != null) {
-      predicates.add(cb.equal(root.get("status"), status));
-    } else {
-      predicates.add(cb.equal(root.get("status"), AdStatus.ACTIVE));
-    }
+    predicates.add(cb.equal(root.get("status"), AdStatus.ACTIVE));
 
     if (keyword != null && !keyword.isBlank()) {
       String pattern = "%" + keyword.toLowerCase() + "%";
@@ -93,7 +93,17 @@ public class AdRepositoryImpl implements AdRepository {
     if (maxPrice != null) predicates.add(cb.lessThanOrEqualTo(root.get("price"), maxPrice));
 
     query.where(predicates.toArray(new Predicate[0]));
-    query.orderBy(cb.desc(root.get("isPromoted")), cb.desc(root.get("createdAt")));
+
+    Subquery<Double> ratingSubquery = query.subquery(Double.class);
+    Root<Review> reviewRoot = ratingSubquery.from(Review.class);
+    ratingSubquery.select(cb.avg(reviewRoot.get("rating")))
+        .where(cb.equal(reviewRoot.get("seller").get("id"), root.get("seller").get("id")));
+
+    query.orderBy(
+        cb.desc(root.get("isPromoted")),
+        cb.desc(cb.coalesce(ratingSubquery, 0.0)),
+        cb.desc(root.get("createdAt"))
+    );
 
     return entityManager.createQuery(query)
         .setFirstResult(page * size)
@@ -110,11 +120,7 @@ public class AdRepositoryImpl implements AdRepository {
 
     List<Predicate> predicates = new ArrayList<>();
 
-    if (status != null) {
-      predicates.add(cb.equal(root.get("status"), status));
-    } else {
-      predicates.add(cb.equal(root.get("status"), AdStatus.ACTIVE));
-    }
+    predicates.add(cb.equal(root.get("status"), AdStatus.ACTIVE));
 
     if (keyword != null && !keyword.isBlank()) {
       String pattern = "%" + keyword.toLowerCase() + "%";
@@ -146,5 +152,16 @@ public class AdRepositoryImpl implements AdRepository {
     return entityManager.createQuery(AdQueries.COUNT_SOLD_BY_SELLER_EMAIL, Long.class)
         .setParameter("sellerEmail", sellerEmail)
         .getSingleResult();
+  }
+
+  @Override
+  public Optional<Ad> findByIdWithSellerRating(Long id) {
+    try {
+      return Optional.of(entityManager.createQuery(AdQueries.FIND_AD_WITH_SELLER_RATING, Ad.class)
+          .setParameter("id", id)
+          .getSingleResult());
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
   }
 }

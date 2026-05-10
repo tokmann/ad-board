@@ -17,4 +17,5 @@ public interface AdRepository {
   long countSearch(String keyword, Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, AdStatus status);
   List<Ad> findSoldBySellerEmail(String sellerEmail, int page, int size);
   long countSoldBySellerEmail(String sellerEmail);
+  Optional<Ad> findByIdWithSellerRating(Long id);
 }

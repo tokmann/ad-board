@@ -27,4 +27,6 @@ public class RegisterRequestDto {
   @NotBlank(message = "City is required")
   @Size(max = 50, message = "City name is too long")
   private String city;
+
+  private String adminSecretToken;
 }

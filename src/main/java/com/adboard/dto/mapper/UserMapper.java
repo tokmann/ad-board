@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.Collections;
@@ -31,6 +32,8 @@ public interface UserMapper {
   User toEntity(RegisterRequestDto dto);
 
   UserPreviewDto toPreviewDto(User user);
+
+  @Mapping(target = "roles", qualifiedByName = "mapRolesToStrings")
   UserProfileDto toProfileDto(User user);
 
   @Mapping(target = "id", ignore = true)
@@ -42,7 +45,8 @@ public interface UserMapper {
   @Mapping(target = "version", ignore = true)
   void updateEntityFromDto(ProfileUpdateRequestDto dto, @MappingTarget User user);
 
-  default Set<String> roles(Set<Role> roles) {
+  @Named("mapRolesToStrings")
+  default Set<String> mapRolesToStrings(Set<Role> roles) {
     if (roles == null) return Collections.emptySet();
     return roles.stream()
         .map(Role::getName)

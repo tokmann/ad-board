@@ -13,6 +13,8 @@ import com.adboard.repository.UserRepository;
 import com.adboard.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,11 +23,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:application.properties")
 public class AuthService {
 
   private final UserRepository userRepository;
@@ -35,6 +39,8 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final AuthenticationManager authenticationManager;
+  @Value("${app.security.admin-secret}")
+  private String adminSecret;
 
   @Transactional
   public AuthResponseDto register(RegisterRequestDto request) {
@@ -45,12 +51,24 @@ public class AuthService {
       throw new UserAlreadyExistsException("Username already taken: " + request.getUsername());
     }
 
+    HashSet<Role> roles = new HashSet<>();
+
+    if (request.getAdminSecretToken() != null) {
+      if (!request.getAdminSecretToken().equals(adminSecret)) {
+        throw new IllegalArgumentException("Invalid admin secret token");
+      }
+      Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+          .orElseThrow(() -> new IllegalStateException("Configuration error: default role 'ROLE_ADMIN' missing"));
+      roles.add(adminRole);
+    }
+
     Role userRole = roleRepository.findByName("ROLE_USER")
         .orElseThrow(() -> new IllegalStateException("Configuration error: default role 'ROLE_USER' missing"));
 
+    roles.add(userRole);
     User user = userMapper.toEntity(request);
     user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-    user.setRoles(Set.of(userRole));
+    user.setRoles(roles);
     userRepository.save(user);
 
     log.info("User registered: id={}, email={}", user.getId(), user.getEmail());

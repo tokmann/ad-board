@@ -47,4 +47,9 @@ public class ConversationRepositoryImpl implements ConversationRepository {
       entityManager.merge(conversation);
     }
   }
+
+  @Override
+  public long count() {
+    return entityManager.createQuery(ConversationQueries.COUNT_ALL_CONVERSATIONS, Long.class).getSingleResult();
+  }
 }

@@ -116,7 +116,7 @@ class ReviewControllerTest {
 
     ReviewRequestDto request = new ReviewRequestDto();
     request.setRating(5);
-    request.setCommentText("Excellent service!");
+    request.setCommentText("Отличный сервис!");
 
     ReviewResponseDto response = new ReviewResponseDto();
     response.setId(100L);
@@ -138,7 +138,7 @@ class ReviewControllerTest {
 
     ReviewRequestDto request = new ReviewRequestDto();
     request.setRating(5);
-    request.setCommentText("Excellent service!");
+    request.setCommentText("Отличный сервис!");
 
     when(reviewService.addReview(eq(1L), any(), any()))
         .thenThrow(new IllegalArgumentException("Cannot leave a review for yourself"));
@@ -158,7 +158,7 @@ class ReviewControllerTest {
 
     ReviewRequestDto request = new ReviewRequestDto();
     request.setRating(5);
-    request.setCommentText("Excellent service!");
+    request.setCommentText("Отличный сервис!");
 
     when(reviewService.addReview(eq(1L), any(), any()))
         .thenThrow(new ReviewAlreadyExistsException("You have already reviewed this seller"));
@@ -177,7 +177,7 @@ class ReviewControllerTest {
     when(auth.getName()).thenReturn("test@test.com");
 
     ReviewRequestDto invalidRequest = new ReviewRequestDto();
-    invalidRequest.setCommentText("Good seller");
+    invalidRequest.setCommentText("Хороший продавец");
 
     mockMvc.perform(post("/api/users/1/reviews")
             .contentType(MediaType.APPLICATION_JSON)

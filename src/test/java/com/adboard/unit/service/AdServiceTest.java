@@ -69,7 +69,7 @@ class AdServiceTest {
 
     category = new Category();
     category.setId(1L);
-    category.setName("Electronics");
+    category.setName("Электроника");
 
     ad = new Ad();
     ad.setId(10L);
@@ -78,8 +78,8 @@ class AdServiceTest {
     ad.setStatus(AdStatus.DRAFT);
     ad.setPrice(BigDecimal.valueOf(100));
     ad.setPromoted(false);
-    ad.setTitle("Original Title");
-    ad.setDescription("Original description");
+    ad.setTitle("Название");
+    ad.setDescription("Тестовое описание");
     ad.setUpdatedAt(LocalDateTime.now());
 
     auth = mock(Authentication.class);

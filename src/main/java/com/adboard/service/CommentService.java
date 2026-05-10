@@ -18,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -36,23 +39,37 @@ public class CommentService {
       throw new ResourceNotFoundException("Ad not found with id: " + adId);
     }
 
-    long totalElements = commentRepository.countRootByAdId(adId);
-    List<Comment> comments = commentRepository.findRootByAdId(adId, page, size);
+    List<Comment> allComments = commentRepository.findAllByAdId(adId);
 
-    List<CommentResponseDto> content = comments.stream()
-        .map(commentMapper::toResponseDto)
-        .peek(dto -> {
-          List<Comment> replies = commentRepository.findRepliesByParentId(dto.getId());
-          dto.setReplies(replies.stream().map(commentMapper::toResponseDto).toList());
-        })
+    List<Comment> rootComments = new ArrayList<>();
+    Map<Long, List<Comment>> repliesByParentId = new HashMap<>();
+
+    for (Comment c : allComments) {
+      if (c.getParentComment() == null) {
+        rootComments.add(c);
+      } else {
+        repliesByParentId.computeIfAbsent(c.getParentComment().getId(), k -> new ArrayList<>())
+            .add(c);
+      }
+    }
+
+    List<CommentResponseDto> fullTree = rootComments.stream()
+        .map(root -> buildCommentTree(root, repliesByParentId))
         .toList();
 
+    int totalElements = fullTree.size();
     int totalPages = (int) Math.ceil((double) totalElements / size);
 
-    log.info("Successfully retrieved {} comments for ad {} (page {}/{})",
-        content.size(), adId, page + 1, totalPages);
+    int fromIndex = page * size;
+    int toIndex = Math.min(fromIndex + size, totalElements);
+    List<CommentResponseDto> paginatedContent = (fromIndex < totalElements)
+        ? fullTree.subList(fromIndex, toIndex)
+        : List.of();
 
-    return new PageResponse<>(content, page, size, totalElements, totalPages);
+    log.info("Successfully retrieved {} comments for ad {} (page {}/{})",
+        paginatedContent.size(), adId, page + 1, totalPages);
+
+    return new PageResponse<>(paginatedContent, page, size, totalElements, totalPages);
   }
 
   @Transactional
@@ -105,5 +122,18 @@ public class CommentService {
     commentRepository.delete(comment);
 
     log.info("Comment deleted successfully: id={}, ad={}", commentId, adId);
+  }
+
+  private CommentResponseDto buildCommentTree(Comment comment, Map<Long, List<Comment>> repliesMap) {
+    CommentResponseDto dto = commentMapper.toResponseDto(comment);
+
+    List<Comment> directReplies = repliesMap.getOrDefault(comment.getId(), List.of());
+
+    List<CommentResponseDto> replyDtos = directReplies.stream()
+        .map(reply -> buildCommentTree(reply, repliesMap))
+        .toList();
+
+    dto.setReplies(replyDtos);
+    return dto;
   }
 }

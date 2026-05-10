@@ -47,15 +47,15 @@ class CommentServiceTest {
   @Mock
   private CommentMapper commentMapper;
 
+  @InjectMocks
+  private CommentService commentService;
+
   private Ad ad;
   private User author;
   private Comment comment;
   private CommentResponseDto commentDto;
   private CommentRequestDto request;
   private Authentication auth;
-
-  @InjectMocks
-  private CommentService commentService;
 
   @BeforeEach
   void setUp() {
@@ -70,14 +70,14 @@ class CommentServiceTest {
     comment.setId(100L);
     comment.setAd(ad);
     comment.setAuthor(author);
-    comment.setText("Test comment");
+    comment.setText("Тестовый комментарий");
 
     commentDto = new CommentResponseDto();
     commentDto.setId(100L);
-    commentDto.setText("Test comment");
+    commentDto.setText("Тестовый комментарий");
 
     request = new CommentRequestDto();
-    request.setText("Test comment");
+    request.setText("Тестовый комментарий");
 
     auth = mock(Authentication.class);
   }
@@ -89,24 +89,91 @@ class CommentServiceTest {
   @Test
   @DisplayName("Should return paginated comments with nested replies")
   void getCommentsByAdId_returnsPaginatedCommentsWithReplies() {
-    Comment reply = new Comment();
-    reply.setId(101L);
-    reply.setParentComment(comment);
-    CommentResponseDto replyDto = new CommentResponseDto();
-    replyDto.setId(101L);
+    Comment root1 = new Comment();
+    root1.setId(100L);
+    root1.setAd(ad);
+    root1.setAuthor(author);
+    root1.setText("Корень 1");
+    root1.setParentComment(null);
+
+    Comment root2 = new Comment();
+    root2.setId(101L);
+    root2.setAd(ad);
+    root2.setAuthor(author);
+    root2.setText("Корень 2");
+    root2.setParentComment(null);
+
+    Comment reply1 = new Comment();
+    reply1.setId(200L);
+    reply1.setAd(ad);
+    reply1.setAuthor(author);
+    reply1.setText("Ответ на корень 1");
+    reply1.setParentComment(root1);
+
+    Comment reply2 = new Comment();
+    reply2.setId(201L);
+    reply2.setAd(ad);
+    reply2.setAuthor(author);
+    reply2.setText("Ответ на корень 1 #2");
+    reply2.setParentComment(root1);
+
+    Comment nestedReply = new Comment();
+    nestedReply.setId(300L);
+    nestedReply.setAd(ad);
+    nestedReply.setAuthor(author);
+    nestedReply.setText("Вложенный ответ");
+    nestedReply.setParentComment(reply1);
+
+    CommentResponseDto root1Dto = new CommentResponseDto();
+    root1Dto.setId(100L);
+    root1Dto.setText("Корень 1");
+
+    CommentResponseDto root2Dto = new CommentResponseDto();
+    root2Dto.setId(101L);
+    root2Dto.setText("Корень 2");
+
+    CommentResponseDto reply1Dto = new CommentResponseDto();
+    reply1Dto.setId(200L);
+    reply1Dto.setText("Ответ на корень 1");
+
+    CommentResponseDto reply2Dto = new CommentResponseDto();
+    reply2Dto.setId(201L);
+    reply2Dto.setText("Ответ на корень 1 #2");
+
+    CommentResponseDto nestedDto = new CommentResponseDto();
+    nestedDto.setId(300L);
+    nestedDto.setText("Вложенный ответ");
 
     when(adRepository.findById(1L)).thenReturn(Optional.of(ad));
-    when(commentRepository.countRootByAdId(1L)).thenReturn(1L);
-    when(commentRepository.findRootByAdId(1L, 0, 10)).thenReturn(List.of(comment));
-    when(commentMapper.toResponseDto(comment)).thenReturn(commentDto);
-    when(commentRepository.findRepliesByParentId(100L)).thenReturn(List.of(reply));
-    when(commentMapper.toResponseDto(reply)).thenReturn(replyDto);
+    when(commentRepository.findAllByAdId(1L)).thenReturn(List.of(root1, root2, reply1, reply2, nestedReply));
+
+    when(commentMapper.toResponseDto(root1)).thenReturn(root1Dto);
+    when(commentMapper.toResponseDto(root2)).thenReturn(root2Dto);
+    when(commentMapper.toResponseDto(reply1)).thenReturn(reply1Dto);
+    when(commentMapper.toResponseDto(reply2)).thenReturn(reply2Dto);
+    when(commentMapper.toResponseDto(nestedReply)).thenReturn(nestedDto);
 
     PageResponse<CommentResponseDto> result = commentService.getCommentsByAdId(1L, 0, 10);
 
-    assertThat(result.getContent()).hasSize(1);
-    assertThat(result.getContent().get(0).getReplies()).hasSize(1);
-    assertThat(result.getTotalElements()).isEqualTo(1);
+    assertThat(result.getContent()).hasSize(2);
+    assertThat(result.getTotalElements()).isEqualTo(2);
+
+    CommentResponseDto foundRoot1 = result.getContent().stream()
+        .filter(dto -> dto.getText().equals("Корень 1"))
+        .findFirst()
+        .orElseThrow();
+
+    assertThat(foundRoot1.getReplies()).hasSize(2);
+    assertThat(foundRoot1.getReplies().stream().map(CommentResponseDto::getText))
+        .containsExactlyInAnyOrder("Ответ на корень 1", "Ответ на корень 1 #2");
+
+    CommentResponseDto foundReply1 = foundRoot1.getReplies().stream()
+        .filter(dto -> dto.getText().equals("Ответ на корень 1"))
+        .findFirst()
+        .orElseThrow();
+
+    assertThat(foundReply1.getReplies()).hasSize(1);
+    assertThat(foundReply1.getReplies().get(0).getText()).isEqualTo("Вложенный ответ");
   }
 
   @Test

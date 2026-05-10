@@ -27,7 +27,7 @@ public class AuthController {
   @Operation(summary = "New user registration")
   @PostMapping("/register")
   public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-    log.debug("REST request to register user: {}", request.getEmail());
+    log.info("REST request to register user: {}", request.getEmail());
     AuthResponseDto response = authService.register(request);
     return ResponseEntity.ok(response);
   }
@@ -35,7 +35,7 @@ public class AuthController {
   @Operation(summary = "Login")
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
-    log.debug("REST request to login: {}", request.getEmail());
+    log.info("REST request to login: {}", request.getEmail());
     AuthResponseDto response = authService.login(request);
     return ResponseEntity.ok(response);
   }

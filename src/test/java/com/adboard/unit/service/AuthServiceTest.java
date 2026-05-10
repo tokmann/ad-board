@@ -83,7 +83,7 @@ class AuthServiceTest {
 
     registerRequest = new RegisterRequestDto();
     registerRequest.setEmail("test@mail.com");
-    registerRequest.setUsername("testuser");
+    registerRequest.setUsername("Пользователь");
     registerRequest.setPassword("plainPass");
 
     loginRequest = new LoginRequestDto();
@@ -92,7 +92,7 @@ class AuthServiceTest {
 
     mappedUser = new User();
     mappedUser.setEmail("test@mail.com");
-    mappedUser.setUsername("testuser");
+    mappedUser.setUsername("Пользователь");
 
     userProfileDto = new UserProfileDto();
     userProfileDto.setEmail("test@mail.com");
@@ -145,7 +145,7 @@ class AuthServiceTest {
   @DisplayName("Should throw exception when username is already in use")
   void register_throws_whenUsernameExists() {
     when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-    when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(new User()));
+    when(userRepository.findByUsername("Пользователь")).thenReturn(Optional.of(new User()));
 
     assertThatThrownBy(() -> authService.register(registerRequest))
         .isInstanceOf(UserAlreadyExistsException.class);

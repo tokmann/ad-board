@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,8 +37,11 @@ public class GlobalExceptionHandler {
   }
 
   // 401: Authentication error
-  @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<ErrorResponseDto> handleUnauthorized(BadCredentialsException ex, HttpServletRequest request) {
+  @ExceptionHandler({
+      BadCredentialsException.class,
+      AuthenticationException.class,
+  })
+  public ResponseEntity<ErrorResponseDto> handleUnauthorized(Exception ex, HttpServletRequest request) {
     log.error("Authentication failed: {}", ex.getMessage());
     return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password", request);
   }

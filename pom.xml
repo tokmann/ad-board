@@ -39,6 +39,7 @@
 
         <!-- Logging -->
         <logback.version>1.4.14</logback.version>
+        <slf4j.version>2.0.9</slf4j.version>
 
         <!-- Testing -->
         <junit.version>5.10.2</junit.version>
@@ -46,6 +47,7 @@
         <assertj.version>3.27.7</assertj.version>
         <testcontainers.version>1.19.7</testcontainers.version>
         <jsonpath.version>2.10.0</jsonpath.version>
+        <jsonassert.version>1.5.3</jsonassert.version>
 
         <!-- Utils -->
         <lombok.version>1.18.42</lombok.version>
@@ -185,6 +187,11 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -233,6 +240,18 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${jsonpath.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring.security.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
             <scope>test</scope>
         </dependency>
 

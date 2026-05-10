@@ -9,7 +9,9 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     return new Class[] {
         JpaConfig.class,
         LiquibaseConfig.class,
-        AppConfig.class
+        AppConfig.class,
+        SecurityConfig.class,
+        JwtConfig.class
     };
   }
 

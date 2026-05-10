@@ -53,7 +53,7 @@ public class AdService {
     List<AdResponseDto> content = ads.stream().map(adMapper::toResponseDto).toList();
     int totalPages = (int) Math.ceil((double) totalElements / size);
 
-    log.info("Search completed: found {} ads (page {}/{}) for filters: keyword={}, cat={}",
+    log.info("Search completed: found {} ads (page {}/{}) for filters: keyword={}, category={}",
         content.size(), page + 1, totalPages, keyword, categoryId);
 
     return new PageResponse<>(content, page, size, totalElements, totalPages);
@@ -200,6 +200,31 @@ public class AdService {
     adRepository.save(ad);
 
     log.info("Ad published by admin {}: id={}", authentication.getName(), id);
+    return adMapper.toResponseDto(ad);
+  }
+
+  @Transactional
+  public AdResponseDto markAdAsSold(Long adId, Authentication authentication) {
+    String currentEmail = authentication.getName();
+
+    Ad ad = adRepository.findById(adId)
+        .orElseThrow(() -> new ResourceNotFoundException("Ad not found with id: " + adId));
+
+    if (!ad.getSeller().getEmail().equals(currentEmail)) {
+      throw new UnauthorizedActionException("Cannot mark ad as sold: you are not the owner");
+    }
+
+    if (ad.getStatus() == AdStatus.DELETED || ad.getStatus() == AdStatus.SOLD) {
+      throw new InvalidAdStatusException("Cannot change status of ad with status: " + ad.getStatus());
+    }
+
+    ad.setStatus(AdStatus.SOLD);
+    ad.setSoldAt(LocalDateTime.now());
+    ad.setUpdatedAt(LocalDateTime.now());
+
+    adRepository.save(ad);
+    log.info("Ad marked as sold: id={}, by={}", adId, currentEmail);
+
     return adMapper.toResponseDto(ad);
   }
 }

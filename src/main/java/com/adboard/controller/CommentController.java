@@ -36,7 +36,7 @@ public class CommentController {
       @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       @Parameter(description = "Page number (starting from 0)") @RequestParam(name = "page", defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size) {
-    log.debug("REST request to fetch comments for ad: {}, page={}", adId, page);
+    log.info("REST request to fetch comments for ad: {}, page={}", adId, page);
     PageResponse<CommentResponseDto> result = commentService.getCommentsByAdId(adId, page, size);
     return ResponseEntity.ok(result);
   }
@@ -47,18 +47,18 @@ public class CommentController {
       @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       @Valid @RequestBody CommentRequestDto request,
       Authentication authentication) {
-    log.debug("REST request to add comment to ad: {} by user: {}", adId, authentication.getName());
+    log.info("REST request to add comment to ad: {} by user: {}", adId, authentication.getName());
     CommentResponseDto created = commentService.addComment(adId, request, authentication);
     return ResponseEntity.status(201).body(created);
   }
 
-  @Operation(summary = "Delete comment (available to author or administrator)")
+  @Operation(summary = "Delete comment (Available to author or administrator)")
   @DeleteMapping("/{commentId}")
   public ResponseEntity<Void> deleteComment(
       @Parameter(description = "Ad ID") @PathVariable("adId") Long adId,
       @Parameter(description = "Comment ID") @PathVariable("commentId") Long commentId,
       Authentication authentication) {
-    log.debug("REST request to delete comment: {} for ad: {}", commentId, adId);
+    log.info("REST request to delete comment: {} for ad: {}", commentId, adId);
     commentService.deleteComment(adId, commentId, authentication);
     return ResponseEntity.noContent().build();
   }

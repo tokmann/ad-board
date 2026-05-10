@@ -73,7 +73,7 @@ class AuthControllerTest {
   void login_badCredentials_returns401() throws Exception {
     LoginRequestDto request = new LoginRequestDto();
     request.setEmail("test@test.com");
-    request.setPassword("wrong password");
+    request.setPassword("Неверный пароль");
 
     when(authService.login(any(LoginRequestDto.class)))
         .thenThrow(new org.springframework.security.authentication.BadCredentialsException("Invalid email or password"));
@@ -93,11 +93,11 @@ class AuthControllerTest {
   @DisplayName("Should return 200 and token when registration is successful")
   void register_success() throws Exception {
     RegisterRequestDto request = new RegisterRequestDto();
-    request.setUsername("testuser");
+    request.setUsername("Тестовый пользователь");
     request.setEmail("test@test.com");
     request.setPassword("password123");
     request.setPhone("+123456789");
-    request.setCity("Moscow");
+    request.setCity("Москва");
 
     AuthResponseDto response = new AuthResponseDto();
     response.setToken("jwt");
@@ -130,11 +130,11 @@ class AuthControllerTest {
   @DisplayName("Should return 409 when email is already registered")
   void register_emailExists_returns409() throws Exception {
     RegisterRequestDto request = new RegisterRequestDto();
-    request.setUsername("testuser");
+    request.setUsername("Тестовый пользователь");
     request.setEmail("test@test.com");
     request.setPassword("password123");
     request.setPhone("+123456789");
-    request.setCity("Moscow");
+    request.setCity("Москва");
 
     when(authService.register(any(RegisterRequestDto.class)))
         .thenThrow(new UserAlreadyExistsException("Email already registered: test@test.com"));

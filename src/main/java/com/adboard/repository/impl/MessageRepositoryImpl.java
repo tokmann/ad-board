@@ -4,10 +4,12 @@ import com.adboard.entity.Message;
 import com.adboard.repository.MessageRepository;
 import com.adboard.repository.queries.MessageQueries;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MessageRepositoryImpl implements MessageRepository {
@@ -37,6 +39,17 @@ public class MessageRepositoryImpl implements MessageRepository {
       entityManager.persist(message);
     } else {
       entityManager.merge(message);
+    }
+  }
+
+  @Override
+  public Optional<Message> findById(Long id) {
+    try {
+      return Optional.of(entityManager.createQuery(MessageQueries.FIND_MESSAGE_BY_ID, Message.class)
+          .setParameter("id", id)
+          .getSingleResult());
+    } catch (NoResultException e) {
+      return Optional.empty();
     }
   }
 }

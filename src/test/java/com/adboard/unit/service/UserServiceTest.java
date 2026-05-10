@@ -54,16 +54,16 @@ class UserServiceTest {
     user = new User();
     user.setId(1L);
     user.setEmail("user@test.com");
-    user.setUsername("testuser");
+    user.setUsername("Пользователь");
     user.setPasswordHash("hashed");
     user.setRoles(Set.of(roleUser));
 
     profileDto = new UserProfileDto();
     profileDto.setEmail("user@test.com");
-    profileDto.setUsername("testuser");
+    profileDto.setUsername("Пользователь");
 
     updateRequest = new ProfileUpdateRequestDto();
-    updateRequest.setUsername("newUsername");
+    updateRequest.setUsername("Новое имя");
     updateRequest.setPhone("+123456789");
 
     auth = mock(Authentication.class);
@@ -119,7 +119,7 @@ class UserServiceTest {
 
     verify(userMapper).updateEntityFromDto(updateRequest, user);
     verify(userRepository).save(user);
-    assertThat(user.getUsername()).isEqualTo("newUsername");
+    assertThat(user.getUsername()).isEqualTo("Новое имя");
     assertThat(user.getPhone()).isEqualTo("+123456789");
   }
 

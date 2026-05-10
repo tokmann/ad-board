@@ -84,7 +84,7 @@ class MessageControllerTest {
   void getMessages_success() throws Exception {
     MessageResponseDto messageDto = new MessageResponseDto();
     messageDto.setId(100L);
-    messageDto.setContent("Is the item still available?");
+    messageDto.setContent("Товар еще актуален?");
 
     PageResponse<MessageResponseDto> pageResponse = new PageResponse<>(
         List.of(messageDto), 0, 20, 1, 1
@@ -99,7 +99,7 @@ class MessageControllerTest {
             .param("size", "20")
             .principal(auth))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].content").value("Is the item still available?"));
+        .andExpect(jsonPath("$.content[0].content").value("Товар еще актуален?"));
   }
 
   @Test
@@ -118,12 +118,12 @@ class MessageControllerTest {
   @DisplayName("Should send a new message successfully")
   void sendMessage_success() throws Exception {
     MessageRequestDto request = new MessageRequestDto();
-    request.setContent("Yes, it is.");
+    request.setContent("Да.");
     request.setReceiverId(2L);
 
     MessageResponseDto response = new MessageResponseDto();
     response.setId(101L);
-    response.setContent("Yes, it is.");
+    response.setContent("Да.");
 
     when(messageService.sendMessage(eq(1L), any(MessageRequestDto.class), any()))
         .thenReturn(response);
@@ -134,7 +134,7 @@ class MessageControllerTest {
             .principal(auth))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(101L))
-        .andExpect(jsonPath("$.content").value("Yes, it is."));
+        .andExpect(jsonPath("$.content").value("Да."));
   }
 
   @Test
@@ -155,7 +155,7 @@ class MessageControllerTest {
   @DisplayName("Should return 400 when sending message to yourself")
   void sendMessage_toSelf_returns400() throws Exception {
     MessageRequestDto request = new MessageRequestDto();
-    request.setContent("Some content");
+    request.setContent("Привет");
     request.setReceiverId(1L);
 
     when(messageService.sendMessage(eq(1L), any(MessageRequestDto.class), any()))
@@ -173,7 +173,7 @@ class MessageControllerTest {
   @DisplayName("Should return 409 when conversation is blocked")
   void sendMessage_conversationBlocked_returns409() throws Exception {
     MessageRequestDto request = new MessageRequestDto();
-    request.setContent("Some content");
+    request.setContent("Привет");
     request.setReceiverId(2L);
 
     when(messageService.sendMessage(eq(1L), any(MessageRequestDto.class), any()))

@@ -77,7 +77,7 @@ class SalesHistoryControllerTest {
   void getSalesHistory_success() throws Exception {
     AdResponseDto adDto = new AdResponseDto();
     adDto.setId(1L);
-    adDto.setTitle("Sold iPhone");
+    adDto.setTitle("Проданный iPhone");
 
     PageResponse<AdResponseDto> response = new PageResponse<>(
         List.of(adDto), 0, 10, 1, 1
@@ -90,7 +90,7 @@ class SalesHistoryControllerTest {
             .param("size", "10")
             .principal(auth))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].title").value("Sold iPhone"))
+        .andExpect(jsonPath("$.content[0].title").value("Проданный iPhone"))
         .andExpect(jsonPath("$.totalElements").value(1));
   }
 
@@ -98,7 +98,7 @@ class SalesHistoryControllerTest {
   @DisplayName("Should return 400 when page parameters are invalid")
   void getSalesHistory_invalidParams_returns400() throws Exception {
     mockMvc.perform(get("/api/users/me/sales")
-            .param("page", "not a number")
+            .param("page", "fdsgsa")
             .principal(auth))
         .andExpect(status().isBadRequest());
   }

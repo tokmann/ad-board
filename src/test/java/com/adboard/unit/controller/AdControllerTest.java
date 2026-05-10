@@ -40,7 +40,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -161,14 +160,14 @@ class AdControllerTest {
     when(auth.getName()).thenReturn("test@test.com");
 
     AdCreateRequestDto request = new AdCreateRequestDto();
-    request.setTitle("Test ad");
+    request.setTitle("Тестовое объявление");
     request.setPrice(new BigDecimal("100.00"));
-    request.setDescription("Some description");
+    request.setDescription("Описание");
     request.setCategoryId(1L);
 
     AdResponseDto response = new AdResponseDto();
     response.setId(1L);
-    response.setTitle("Test ad");
+    response.setTitle("Тестовое объявление");
 
     when(adService.createAd(any(), any())).thenReturn(response);
 
@@ -178,7 +177,7 @@ class AdControllerTest {
             .principal(auth))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(1L))
-        .andExpect(jsonPath("$.title").value("Test ad"));
+        .andExpect(jsonPath("$.title").value("Тестовое объявление"));
   }
 
   @Test
@@ -188,8 +187,8 @@ class AdControllerTest {
 
     AdCreateRequestDto request = new AdCreateRequestDto();
     request.setCategoryId(999L);
-    request.setTitle("Title");
-    request.setDescription("Description");
+    request.setTitle("Название");
+    request.setDescription("Описание");
     request.setPrice(new BigDecimal("100"));
 
     when(adService.createAd(any(), any()))
@@ -212,13 +211,13 @@ class AdControllerTest {
     when(auth.getName()).thenReturn("test@test.com");
 
     AdUpdateRequestDto request = new AdUpdateRequestDto();
-    request.setTitle("Updated title");
+    request.setTitle("Обновленное название");
     request.setPrice(new BigDecimal("100.00"));
-    request.setDescription("Updated description");
+    request.setDescription("Обновленное описание");
 
     AdResponseDto response = new AdResponseDto();
     response.setId(1L);
-    response.setTitle("Updated title");
+    response.setTitle("Обновленное название");
 
     when(adService.updateAd(eq(1L), any(), any())).thenReturn(response);
 
@@ -227,7 +226,7 @@ class AdControllerTest {
             .content(objectMapper.writeValueAsString(request))
             .principal(auth))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.title").value("Updated title"));
+        .andExpect(jsonPath("$.title").value("Обновленное название"));
   }
 
   @Test
@@ -236,9 +235,9 @@ class AdControllerTest {
     when(auth.getName()).thenReturn("test@test.com");
 
     AdUpdateRequestDto request = new AdUpdateRequestDto();
-    request.setTitle("Updated title");
+    request.setTitle("Обновленное название");
     request.setPrice(new BigDecimal("100.00"));
-    request.setDescription("Updated description");
+    request.setDescription("Обновленное описание");
 
     when(adService.updateAd(eq(999L), any(), any()))
         .thenThrow(new ResourceNotFoundException("Ad not found"));
@@ -255,9 +254,9 @@ class AdControllerTest {
   @DisplayName("Should return 403 when updating someone else's ad")
   void updateAd_notOwner_returns403() throws Exception {
     AdUpdateRequestDto request = new AdUpdateRequestDto();
-    request.setTitle("Hacked title");
+    request.setTitle("Взломанное название");
     request.setPrice(new BigDecimal("100.00"));
-    request.setDescription("Hacked description");
+    request.setDescription("Взломанное описание");
 
     when(adService.updateAd(eq(1L), any(), any()))
         .thenThrow(new UnauthorizedActionException("Cannot edit ad: you are not the owner"));
@@ -274,9 +273,9 @@ class AdControllerTest {
   @DisplayName("Should return 409 when updating ad with invalid status (SOLD/DELETED)")
   void updateAd_invalidStatus_returns409() throws Exception {
     AdUpdateRequestDto request = new AdUpdateRequestDto();
-    request.setTitle("Updated title");
+    request.setTitle("Обновленное название");
     request.setPrice(new BigDecimal("100.00"));
-    request.setDescription("Updated description");
+    request.setDescription("Обновленное описание");
 
     when(adService.updateAd(eq(1L), any(), any()))
         .thenThrow(new InvalidAdStatusException("Cannot edit ad with status: SOLD"));

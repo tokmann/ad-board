@@ -88,7 +88,7 @@ class CommentControllerTest {
   void getComments_success() throws Exception {
     CommentResponseDto dto = new CommentResponseDto();
     dto.setId(1L);
-    dto.setText("Great ad!");
+    dto.setText("Отличное объявление!");
 
     PageResponse<CommentResponseDto> response = new PageResponse<>(
         List.of(dto), 0, 10, 1, 1
@@ -101,7 +101,7 @@ class CommentControllerTest {
             .param("size", "10")
             .principal(auth))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].text").value("Great ad!"));
+        .andExpect(jsonPath("$.content[0].text").value("Отличное объявление!"));
   }
 
   @Test
@@ -123,11 +123,11 @@ class CommentControllerTest {
   @DisplayName("Should create a new comment")
   void addComment_success() throws Exception {
     CommentRequestDto request = new CommentRequestDto();
-    request.setText("My new comment");
+    request.setText("Мой новый комментарий");
 
     CommentResponseDto response = new CommentResponseDto();
     response.setId(10L);
-    response.setText("My new comment");
+    response.setText("Мой новый комментарий");
 
     when(commentService.addComment(eq(1L), any(), any())).thenReturn(response);
 
@@ -156,7 +156,7 @@ class CommentControllerTest {
   @DisplayName("Should return 404 when parent comment not found")
   void addComment_parentNotFound_returns404() throws Exception {
     CommentRequestDto request = new CommentRequestDto();
-    request.setText("Reply text");
+    request.setText("Текст ответа");
     request.setParentCommentId(555L);
 
     when(commentService.addComment(eq(1L), any(), any()))
@@ -173,7 +173,7 @@ class CommentControllerTest {
   @DisplayName("Should return 400 when parent comment belongs to different ad")
   void addComment_wrongAdParent_returns400() throws Exception {
     CommentRequestDto request = new CommentRequestDto();
-    request.setText("Reply text");
+    request.setText("Текст ответа");
     request.setParentCommentId(555L);
 
     when(commentService.addComment(eq(1L), any(), any()))

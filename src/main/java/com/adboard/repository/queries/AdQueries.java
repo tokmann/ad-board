@@ -20,4 +20,11 @@ public final class AdQueries {
 
   public static final String COUNT_SOLD_BY_SELLER_EMAIL =
       "SELECT COUNT(a) FROM Ad a WHERE a.seller.email = :sellerEmail AND a.status = 'SOLD'";
+
+  public static final String FIND_AD_WITH_SELLER_RATING =
+      "SELECT a FROM Ad a " +
+          "LEFT JOIN a.seller s " +
+          "LEFT JOIN s.reviews r " +
+          "WHERE a.id = :adId " +
+          "GROUP BY a.id";
 }

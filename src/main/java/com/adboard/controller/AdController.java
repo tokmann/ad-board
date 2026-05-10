@@ -4,6 +4,7 @@ import com.adboard.dto.request.ad.AdCreateRequestDto;
 import com.adboard.dto.request.ad.AdUpdateRequestDto;
 import com.adboard.dto.response.ad.AdResponseDto;
 import com.adboard.dto.response.PageResponse;
+import com.adboard.entity.enums.AdStatus;
 import com.adboard.service.AdService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,7 +45,7 @@ public class AdController {
       @Parameter(description = "Category ID") @RequestParam(name = "categoryId", required = false) Long categoryId,
       @Parameter(description = "Min price") @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
       @Parameter(description = "Max price") @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice) {
-    log.debug("REST request to search ads: page={}, size={}, keyword={}, categoryId={}", page, size, keyword, categoryId);
+    log.info("REST request to search ads: page={}, size={}, keyword={}, categoryId={}", page, size, keyword, categoryId);
     PageResponse<AdResponseDto> result = adService.searchAds(page, size, keyword, categoryId, minPrice, maxPrice);
     return ResponseEntity.ok(result);
   }
@@ -52,7 +53,7 @@ public class AdController {
   @Operation(summary = "Get ad by ID")
   @GetMapping("{id}")
   public ResponseEntity<AdResponseDto> getAdById(@PathVariable("id") Long id) {
-    log.debug("REST request to get ad by id: {}", id);
+    log.info("REST request to get ad by id: {}", id);
     AdResponseDto ad = adService.getAdById(id);
     return ResponseEntity.ok(ad);
   }
@@ -62,7 +63,7 @@ public class AdController {
   public ResponseEntity<AdResponseDto> createAd(
       @Valid @RequestBody AdCreateRequestDto request,
       Authentication authentication) {
-    log.debug("REST request to create ad by user: {}", authentication.getName());
+    log.info("REST request to create ad by user: {}", authentication.getName());
     AdResponseDto createdAd = adService.createAd(request, authentication);
     return ResponseEntity.status(201).body(createdAd);
   }
@@ -73,7 +74,7 @@ public class AdController {
       @PathVariable("id") Long id,
       @Valid @RequestBody AdUpdateRequestDto request,
       Authentication authentication) {
-    log.debug("REST request to update ad: id={}, user={}", id, authentication.getName());
+    log.info("REST request to update ad: id={}, user={}", id, authentication.getName());
     AdResponseDto updatedAd = adService.updateAd(id, request, authentication);
     return ResponseEntity.ok(updatedAd);
   }
@@ -81,9 +82,19 @@ public class AdController {
   @Operation(summary = "Delete ad")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteAd(@PathVariable("id") Long id, Authentication authentication) {
-    log.debug("REST request to delete ad: id={}, user={}", id, authentication.getName());
+    log.info("REST request to delete ad: id={}, user={}", id, authentication.getName());
     adService.deleteAd(id, authentication);
     return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "Mark ad as sold")
+  @PutMapping("/{id}/sold")
+  public ResponseEntity<AdResponseDto> markAdAsSold(
+      @Parameter(description = "Ad ID") @PathVariable("id") Long id,
+      Authentication authentication) {
+    log.info("REST request to mark ad as sold: {} by user: {}", id, authentication.getName());
+    AdResponseDto soldAd = adService.markAdAsSold(id, authentication);
+    return ResponseEntity.ok(soldAd);
   }
 
   @Operation(summary = "Publish ad after moderation (Admin only)")
@@ -93,7 +104,7 @@ public class AdController {
       @Parameter(description = "Ad ID") @PathVariable("id") Long id,
       Authentication authentication) {
 
-    log.debug("REST request to publish ad: {} by admin: {}", id, authentication.getName());
+    log.info("REST request to publish ad: {} by admin: {}", id, authentication.getName());
     AdResponseDto published = adService.publishAd(id, authentication);
     return ResponseEntity.ok(published);
   }

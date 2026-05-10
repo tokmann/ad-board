@@ -24,7 +24,7 @@ public class CategoryController {
   @Operation(summary = "Get a list of all categories")
   @GetMapping
   public ResponseEntity<PageResponse<CategoryDto>> getAllCategories() {
-    log.debug("REST request to get all categories");
+    log.info("REST request to get all categories");
     PageResponse<CategoryDto> categories = categoryService.getAllCategories();
     return ResponseEntity.ok(categories);
   }

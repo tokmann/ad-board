@@ -1,6 +1,7 @@
 package com.adboard.config;
 
 import com.adboard.security.JwtAuthFilter;
+import com.adboard.security.JwtAuthenticationEntryPoint;
 import com.adboard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 
+  private final JwtAuthenticationEntryPoint unauthorizedHandler;
   private final JwtAuthFilter jwtAuthFilter;
   private final UserService userService;
 
@@ -52,10 +54,13 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(exception -> exception
+            .authenticationEntryPoint(unauthorizedHandler)
+        )
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
             .requestMatchers("/api/**").authenticated()
-            .anyRequest().permitAll()
+            .anyRequest().denyAll()
         )
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

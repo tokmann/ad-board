@@ -9,4 +9,6 @@ public final class MessageQueries {
 
   public static final String COUNT_BY_CONVERSATION =
       "SELECT COUNT(m) FROM Message m WHERE m.conversation.id = :convId";
+
+  public static final String FIND_MESSAGE_BY_ID = "SELECT m FROM Message m WHERE m.id = :id";
 }

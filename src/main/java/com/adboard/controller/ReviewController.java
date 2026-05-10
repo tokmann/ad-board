@@ -35,7 +35,7 @@ public class ReviewController {
       @Parameter(description = "Seller ID") @PathVariable("sellerId") Long sellerId,
       @Valid @RequestBody ReviewRequestDto request,
       Authentication authentication) {
-    log.debug("REST request to add review for seller: {} by user: {}", sellerId, authentication.getName());
+    log.info("REST request to add review for seller: {} by user: {}", sellerId, authentication.getName());
     ReviewResponseDto created = reviewService.addReview(sellerId, request, authentication);
     return ResponseEntity.status(201).body(created);
   }
@@ -46,7 +46,7 @@ public class ReviewController {
       @Parameter(description = "Seller ID") @PathVariable("sellerId") Long sellerId,
       @Parameter(description = "Page number") @RequestParam(name = "page", defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(name = "size", defaultValue = "10") int size) {
-    log.debug("REST request to fetch reviews for seller: {}, page={}", sellerId, page);
+    log.info("REST request to fetch reviews for seller: {}, page={}", sellerId, page);
     PageResponse<ReviewResponseDto> result = reviewService.getReviewsBySellerId(sellerId, page, size);
     return ResponseEntity.ok(result);
   }

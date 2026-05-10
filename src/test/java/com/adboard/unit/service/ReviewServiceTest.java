@@ -66,18 +66,18 @@ class ReviewServiceTest {
     review = new Review();
     review.setId(100L);
     review.setRating(5);
-    review.setCommentText("Great!");
+    review.setCommentText("Отлично!");
     review.setReviewer(reviewer);
     review.setSeller(seller);
 
     reviewDto = new ReviewResponseDto();
     reviewDto.setId(100L);
     reviewDto.setRating(5);
-    reviewDto.setCommentText("Great!");
+    reviewDto.setCommentText("Отлично!");
 
     request = new ReviewRequestDto();
     request.setRating(5);
-    request.setCommentText("Great!");
+    request.setCommentText("Отлично!");
 
     auth = mock(Authentication.class);
   }

@@ -79,7 +79,7 @@ class UserControllerTest {
   void getMyProfile_success() throws Exception {
     UserProfileDto profile = new UserProfileDto();
     profile.setEmail("test@test.com");
-    profile.setUsername("testuser");
+    profile.setUsername("Пользователь");
 
     when(userService.getMyProfile(any())).thenReturn(profile);
 
@@ -87,7 +87,7 @@ class UserControllerTest {
             .principal(auth))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.email").value("test@test.com"))
-        .andExpect(jsonPath("$.username").value("testuser"));
+        .andExpect(jsonPath("$.username").value("Пользователь"));
   }
 
   @Test
@@ -108,12 +108,12 @@ class UserControllerTest {
   @DisplayName("Should return 200 when profile is updated")
   void updateMyProfile_success() throws Exception {
     ProfileUpdateRequestDto request = new ProfileUpdateRequestDto();
-    request.setUsername("New username");
-    request.setCity("Old city");
-    request.setPhone("Old phone");
+    request.setUsername("Новое имя");
+    request.setCity("Старый город");
+    request.setPhone("Старый телефон");
 
     UserProfileDto response = new UserProfileDto();
-    response.setUsername("New username");
+    response.setUsername("Новое имя");
 
     when(userService.updateMyProfile(any(), any())).thenReturn(response);
 
@@ -122,7 +122,7 @@ class UserControllerTest {
             .content(objectMapper.writeValueAsString(request))
             .principal(auth))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.username").value("New username"));
+        .andExpect(jsonPath("$.username").value("Новое имя"));
   }
 
   @Test
@@ -142,9 +142,9 @@ class UserControllerTest {
   @DisplayName("Should return 404 when updating non-existent user profile")
   void updateMyProfile_userNotFound() throws Exception {
     ProfileUpdateRequestDto request = new ProfileUpdateRequestDto();
-    request.setUsername("New username");
-    request.setCity("Old city");
-    request.setPhone("Old phone");
+    request.setUsername("Новое имя");
+    request.setCity("Старый город");
+    request.setPhone("Старый телефон");
 
     when(userService.updateMyProfile(any(), any()))
         .thenThrow(new ResourceNotFoundException("User not found"));

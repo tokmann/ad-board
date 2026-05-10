@@ -52,6 +52,13 @@ public class CommentRepositoryImpl implements CommentRepository {
   }
 
   @Override
+  public List<Comment> findAllByAdId(Long adId) {
+    return entityManager.createQuery(CommentQueries.FIND_ALL_BY_AD_ID_WITH_AUTHOR, Comment.class)
+        .setParameter("adId", adId)
+        .getResultList();
+  }
+
+  @Override
   public void save(Comment comment) {
     if (comment.getId() == null) {
       entityManager.persist(comment);

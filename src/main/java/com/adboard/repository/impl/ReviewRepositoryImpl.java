@@ -46,6 +46,13 @@ public class ReviewRepositoryImpl implements ReviewRepository {
   }
 
   @Override
+  public Double findAverageRatingBySellerId(Long sellerId) {
+    return entityManager.createQuery(ReviewQueries.FIND_AVERAGE_RATING_BY_SELLER_ID, Double.class)
+        .setParameter("sellerId", sellerId)
+        .getSingleResult();
+  }
+
+  @Override
   public void save(Review review) {
     if (review.getId() == null) {
       entityManager.persist(review);

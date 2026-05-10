@@ -91,16 +91,16 @@ class MessageServiceTest {
 
     message = new Message();
     message.setId(1000L);
-    message.setContent("Hello!");
+    message.setContent("Привет!");
     message.setConversation(conversation);
     message.setSender(buyer);
 
     messageDto = new MessageResponseDto();
     messageDto.setId(1000L);
-    messageDto.setContent("Hello!");
+    messageDto.setContent("Привет!");
 
     request = new MessageRequestDto();
-    request.setContent("Hello!");
+    request.setContent("Привет!");
     request.setReceiverId(seller.getId());
 
     auth = mock(Authentication.class);

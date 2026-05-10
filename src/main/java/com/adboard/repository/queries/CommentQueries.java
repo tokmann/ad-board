@@ -15,4 +15,7 @@ public final class CommentQueries {
 
   public static final String COUNT_ROOT_BY_AD_ID =
       "SELECT COUNT(c) FROM Comment c WHERE c.ad.id = :adId AND c.parentComment IS NULL";
+
+  public static final String FIND_ALL_BY_AD_ID_WITH_AUTHOR =
+      "SELECT c FROM Comment c LEFT JOIN FETCH c.author WHERE c.ad.id = :adId ORDER BY c.createdAt ASC";
 }
