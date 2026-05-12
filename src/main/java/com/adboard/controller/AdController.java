@@ -91,9 +91,10 @@ public class AdController {
   @PutMapping("/{id}/sold")
   public ResponseEntity<AdResponseDto> markAdAsSold(
       @Parameter(description = "Ad ID") @PathVariable("id") Long id,
+      @Parameter(description = "Buyer ID") @RequestParam("buyerId") Long buyerId,
       Authentication authentication) {
-    log.info("REST request to mark ad as sold: {} by user: {}", id, authentication.getName());
-    AdResponseDto soldAd = adService.markAdAsSold(id, authentication);
+    log.info("REST request to mark ad as sold: {} to buyer: {} by user: {}", id, buyerId, authentication.getName());
+    AdResponseDto soldAd = adService.markAdAsSold(id, buyerId, authentication);
     return ResponseEntity.ok(soldAd);
   }
 
@@ -103,7 +104,6 @@ public class AdController {
   public ResponseEntity<AdResponseDto> publishAd(
       @Parameter(description = "Ad ID") @PathVariable("id") Long id,
       Authentication authentication) {
-
     log.info("REST request to publish ad: {} by admin: {}", id, authentication.getName());
     AdResponseDto published = adService.publishAd(id, authentication);
     return ResponseEntity.ok(published);

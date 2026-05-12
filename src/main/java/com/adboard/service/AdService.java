@@ -107,7 +107,6 @@ public class AdService {
     }
 
     adMapper.updateEntityFromDto(request, ad);
-
     ad.setStatus(AdStatus.DRAFT);
     ad.setUpdatedAt(LocalDateTime.now());
     adRepository.save(ad);
@@ -204,7 +203,7 @@ public class AdService {
   }
 
   @Transactional
-  public AdResponseDto markAdAsSold(Long adId, Authentication authentication) {
+  public AdResponseDto markAdAsSold(Long adId, Long buyerId, Authentication authentication) {
     String currentEmail = authentication.getName();
 
     Ad ad = adRepository.findById(adId)
@@ -218,12 +217,16 @@ public class AdService {
       throw new InvalidAdStatusException("Cannot change status of ad with status: " + ad.getStatus());
     }
 
+    User buyer = userRepository.findById(buyerId)
+        .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id: " + buyerId));
+
+    ad.setBuyer(buyer);
     ad.setStatus(AdStatus.SOLD);
     ad.setSoldAt(LocalDateTime.now());
     ad.setUpdatedAt(LocalDateTime.now());
 
     adRepository.save(ad);
-    log.info("Ad marked as sold: id={}, by={}", adId, currentEmail);
+    log.info("Ad marked as sold: id={}, buyer={}, by={}", adId, buyerId, currentEmail);
 
     return adMapper.toResponseDto(ad);
   }

@@ -26,6 +26,7 @@ public class AdResponseDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
   private LocalDateTime createdAt;
   private UserPreviewDto seller;
+  private UserPreviewDto buyer;
   private CategoryDto category;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
   private LocalDateTime soldAt;

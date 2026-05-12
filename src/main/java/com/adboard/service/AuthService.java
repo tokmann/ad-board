@@ -75,7 +75,6 @@ public class AuthService {
 
     Authentication authentication = createAuthentication(user);
     String token = jwtTokenProvider.generateToken(authentication);
-
     UserProfileDto profileDto = userMapper.toProfileDto(user);
     AuthResponseDto response = new AuthResponseDto();
     response.setUser(profileDto);

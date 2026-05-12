@@ -20,9 +20,6 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.Every.everyItem;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,11 +42,9 @@ class AdSalesHistoryTest extends IntegrationTestBase {
   private PasswordEncoder passwordEncoder;
 
   private User seller;
-  private User buyer;
   private Category electronics;
   private Role roleUser;
   private String sellerToken;
-  private String buyerToken;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -63,15 +58,7 @@ class AdSalesHistoryTest extends IntegrationTestBase {
     seller.setRoles(Set.of(roleUser));
     userRepository.save(seller);
 
-    buyer = new User();
-    buyer.setUsername("Покупатель");
-    buyer.setEmail("buyer-sales@test.com");
-    buyer.setPasswordHash(passwordEncoder.encode("pass123"));
-    buyer.setRoles(Set.of(roleUser));
-    userRepository.save(buyer);
-
     sellerToken = loginAndGetToken("seller-sales@test.com", "pass123");
-    buyerToken = loginAndGetToken("buyer-sales@test.com", "pass123");
   }
 
   private String loginAndGetToken(String email, String password) throws Exception {
@@ -104,11 +91,19 @@ class AdSalesHistoryTest extends IntegrationTestBase {
   @Test
   @DisplayName("Should allow owner to mark their ad as sold")
   void markAdAsSold_owner_success_changesStatus() throws Exception {
+    User buyer = new User();
+    buyer.setUsername("Покупатель");
+    buyer.setEmail("buyer@test.com");
+    buyer.setPasswordHash(passwordEncoder.encode("pass123"));
+    buyer.setRoles(Set.of(roleUser));
+    userRepository.save(buyer);
+
     Ad ad = createActiveAd(seller, "Товар для продажи", new BigDecimal("500.00"));
 
     mockMvc.perform(put("/api/ads/{id}/sold", ad.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer " + sellerToken))
+            .header("Authorization", "Bearer " + sellerToken)
+            .param("buyerId", String.valueOf(buyer.getId())))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("SOLD"))
         .andExpect(jsonPath("$.soldAt").exists());
@@ -121,11 +116,20 @@ class AdSalesHistoryTest extends IntegrationTestBase {
   @Test
   @DisplayName("Should reject marking ad as sold when user is not owner")
   void markAdAsSold_nonOwner_returnsForbidden() throws Exception {
+    User buyer = new User();
+    buyer.setUsername("Покупатель");
+    buyer.setEmail("buyer@test.com");
+    buyer.setPasswordHash(passwordEncoder.encode("pass123"));
+    buyer.setRoles(Set.of(roleUser));
+    userRepository.save(buyer);
+
     Ad ad = createActiveAd(seller, "Чужой товар", new BigDecimal("600.00"));
+    String buyerToken = loginAndGetToken("buyer@test.com", "pass123");
 
     mockMvc.perform(put("/api/ads/{id}/sold", ad.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer " + buyerToken))
+            .header("Authorization", "Bearer " + buyerToken)
+            .param("buyerId", String.valueOf(buyer.getId())))
         .andExpect(status().isForbidden());
 
     Ad unchanged = adRepository.findById(ad.getId()).orElseThrow();
@@ -136,11 +140,20 @@ class AdSalesHistoryTest extends IntegrationTestBase {
   @Test
   @DisplayName("Should exclude sold ads from regular search results")
   void searchAds_excludesSoldAds_byDefault() throws Exception {
+    User buyer = new User();
+    buyer.setUsername("Покупатель");
+    buyer.setEmail("buyer@test.com");
+    buyer.setPasswordHash(passwordEncoder.encode("pass123"));
+    buyer.setRoles(Set.of(roleUser));
+    userRepository.save(buyer);
+
     Ad active = createActiveAd(seller, "Активный товар", new BigDecimal("100.00"));
     Ad sold = createActiveAd(seller, "Проданный товар", new BigDecimal("200.00"));
+    String buyerToken = loginAndGetToken("buyer@test.com", "pass123");
 
     mockMvc.perform(put("/api/ads/{id}/sold", sold.getId())
-            .header("Authorization", "Bearer " + sellerToken))
+            .header("Authorization", "Bearer " + sellerToken)
+            .param("buyerId", String.valueOf(buyer.getId())))
         .andExpect(status().isOk());
 
     mockMvc.perform(get("/api/ads")
